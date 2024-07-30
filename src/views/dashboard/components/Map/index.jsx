@@ -30,9 +30,6 @@ class Map extends Component {
       console.error("Error fetching study program data: ", error);
     }
   };
-  async componentDidMount() {
-    this.fetchKandangList();
-  }
 
   fetchHewanList = async () => {
     try {
@@ -78,12 +75,19 @@ class Map extends Component {
   { kandang.map((kdg, index) => {
   const kdgLatitude = parseFloat(kdg.latitude);
   const kdgLongitude = parseFloat(kdg.longitude);
+  const idKandang = kdg.idKandang;
+  const luas = kdg.luas;
+  const kapasitas = kdg.kapasitas;
+  const nilaiBangunan = kdg.nilaiBangunan;
 
   if (!isNaN(kdgLatitude) && !isNaN(kdgLongitude)) {
     return (
       <Marker key={`kandang-${index}`} position={[kdgLatitude, kdgLongitude]} icon={pinKdg}>
         <Popup>
-          Lokasi kandang
+          <div>ID Kandang : {idKandang}</div>
+          <div>Luas : {luas}</div>
+          <div>Kapasitas : {kapasitas}</div>
+          <div>Nilai Bangunan : {nilaiBangunan}</div>
         </Popup>
       </Marker>
     );
@@ -93,12 +97,17 @@ class Map extends Component {
 { hewans.map((hwn, index) => {
   const hwnLatitude = parseFloat(hwn.latitude);
   const hwnLongitude = parseFloat(hwn.longitude);
+  const kodeEartagNasional = hwn.kodeEartagNasional;
+  const namaPeternak = hwn.peternak.namaPeternak;
+  const nikPeternak = hwn.peternak.nikPeternak;
 
   if (!isNaN(hwnLatitude) && !isNaN(hwnLongitude)) {
     return (
       <Marker key={`hewan-${index}`} position={[hwnLatitude, hwnLongitude]} icon={pinHewan}>
         <Popup>
-          Lokasi hewan
+        <div>Eartag Hewan : {kodeEartagNasional}</div>
+          <div>Nama Peternak : {namaPeternak}</div>
+          <div>NIK Peternak : {nikPeternak}</div>
         </Popup>
       </Marker>
     );

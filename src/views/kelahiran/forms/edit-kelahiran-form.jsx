@@ -3,6 +3,8 @@ import { Form, Input, Modal, Select } from "antd";
 import { getPetugas } from "@/api/petugas"; // Import the API function to fetch petugas data
 import { getPeternaks } from "@/api/peternak";
 import { getHewans } from "../../../api/hewan"; 
+import {getInseminasis} from "@/api/inseminasi";
+import {getKandang} from "@/api/kandang";
 
 const { Option } = Select;
 
@@ -11,12 +13,16 @@ class EditKelahiranForm extends Component {
     hewanList: [],
     petugasList: [],
     peternakList: [],
+    inseminasiList: [],
+    kandangList: []
   };
 
   componentDidMount() {
     this.fetchPetugasList();
     this.fetchPeternakList();
     this.fetchHewanList();
+    this.fetchKandangList();
+    this.fetchInseminasiList();
   }
 
   fetchPetugasList = async () => {
@@ -68,21 +74,49 @@ class EditKelahiranForm extends Component {
       console.error("Error fetching peternak data: ", error);
     }
   };
+
+  fetchKandangList = async () => {
+    try {
+      const result = await getKandang(); 
+      const { content, statusCode } = result.data;
+      if (statusCode === 200) {
+        const kandangList = content.map((kandang) => ({
+          idKandang: kandang.idKandang
+        }));
+        this.setState({ kandangList });
+      }
+    } catch (error) {
+      // Handle error if any
+      console.error("Error fetching kandang data: ", error);
+    }
+  };
+
+  fetchInseminasiList = async () => {
+    try {
+      const result = await getInseminasis(); // Fetch peternak data from the server
+      const { content, statusCode } = result.data;
+      if (statusCode === 200) {
+        const inseminasiList = content.map((inseminasi) => ({
+          idInseminasi: inseminasi.idInseminasi,
+        }));
+        this.setState({ inseminasiList });
+      }
+    } catch (error) {
+      
+    }
+  }
   render() {
     const { visible, onCancel, onOk, form, confirmLoading, currentRowData } =
       this.props;
     const { getFieldDecorator } = form;
-    const { petugasList, peternakList, hewanList   } = this.state;
+    const { petugasList, peternakList, hewanList, kandangList, inseminasiList  } = this.state;
     const {
       idKejadian,
       tanggalLaporan,
       tanggalLahir,
       peternak,
       hewan,
-      idPejantanStraw,
-      idBatchStraw,
-      produsenStraw,
-      spesiesPejantan,
+      inseminasi,
       eartagAnak,
       jenisKelaminAnak,
       spesies,
@@ -152,36 +186,16 @@ class EditKelahiranForm extends Component {
               </Select>
             )}
           </Form.Item>
-          <Form.Item label="ID Pejantan Straw:">
-            {getFieldDecorator(
-              "idPejantanStraw",
-              {initialValue: idPejantanStraw}
-            )(<Input placeholder="Masukkan ID" />)}
-          </Form.Item>
-          <Form.Item label="ID Batch Straw:">
-            {getFieldDecorator(
-              "idBatchStraw",
-              {initialValue: idBatchStraw}
-            )(<Input placeholder="Masukkan ID" />)}
-          </Form.Item>
-          <Form.Item label="Produsen Straw:">
-            {getFieldDecorator(
-              "produsenStraw",
-              {initialValue: produsenStraw}
-            )(<Input placeholder="Masukkan produsen" />)}
-          </Form.Item>
-          <Form.Item label="Spesies Pejantan:">
-            {getFieldDecorator("spesiesPejantan", {
-              initialValue: spesiesPejantan,
+          <Form.Item label="ID Inseminasi:">
+            {getFieldDecorator("inseminasi_id", {
+              initialValue: inseminasi?inseminasi.idInseminasi:undefined
             })(
-              <Select style={{ width: 150 }}>
-                <Select.Option value="Sapi Limosin">Sapi Limosin</Select.Option>
-                <Select.Option value="Sapi Simental">
-                  Sapi Simental
-                </Select.Option>
-                <Select.Option value="Sapi FH">Sapi FH</Select.Option>
-                <Select.Option value="Sapi PO">Sapi PO</Select.Option>
-                <Select.Option value="Sapi Brangus">Sapi Brangus</Select.Option>
+              <Select placeholder="Pilih Inseminasi">
+                {inseminasiList.map((inseminasi) => (
+                  <Option key={inseminasi.idInseminasi} value={inseminasi.idInseminasi}>
+                    {inseminasi.idInseminasi}
+                  </Option>
+                ))}
               </Select>
             )}
           </Form.Item>
@@ -216,6 +230,21 @@ class EditKelahiranForm extends Component {
               </Select>
             )}
           </Form.Item>
+          <Form.Item label="Kandang Anak:">
+            {getFieldDecorator("kandang_id", {
+              rules: [
+                { required: true, message: "Silahkan isi ID Kandang" },
+              ],
+            })(
+              <Select placeholder="Pilih ID Hewan">
+                {kandangList.map((kandang) => (
+                  <Option key={kandang.idKandang} value={kandang.idKandang}>
+                    {kandang.idKandang}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
           <Form.Item label="Petugas Pelapor:">
             {getFieldDecorator("petugas_id", {
               initialValue: petugas?petugas.namaPetugas:undefined
@@ -228,12 +257,6 @@ class EditKelahiranForm extends Component {
                 ))}
               </Select>
             )}
-          </Form.Item>
-          <Form.Item label="Urutan IB:">
-            {getFieldDecorator(
-              "urutanIb",
-              {initialValue: urutanIb}
-            )(<Input placeholder="Masukkan urutan " />)}
           </Form.Item>
         </Form>
       </Modal>

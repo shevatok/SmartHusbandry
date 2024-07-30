@@ -468,15 +468,15 @@ class Kelahiran extends Component {
       {title: "ID Peternak", dataIndex: "peternak.namaPeternak", key: "idPeternak"},
       {title: "Eartag Induk", dataIndex: "hewan.kodeEartagNasional", key: "kodeEartagNasional"},
       {title: "Spesies Induk", dataIndex: "hewan.spesies", key: "spesiesInduk"},
-      {title: "ID Pejantan Straw", dataIndex: "idPejantanStraw", key: "idPejantanStraw"},
-      {title: "ID Batch Straw", dataIndex: "idBatchStraw", key: "idBatchStraw"},
-      {title: "Produsen Straw", dataIndex: "produsenStraw", key: "produsenStraw"},
-      {title: "Spesies Pejantan", dataIndex: "spesiesPejantan", key: "spesiesPejantan"},
+      {title: "ID Pejantan Straw", dataIndex: "inseminasi.idPejantan", key: "idPejantan"},
+      {title: "ID Batch Straw", dataIndex: "inseminasi.idPembuatan", key: "idPembuatan"},
+      {title: "Produsen Straw", dataIndex: "inseminasi.produsen", key: "produsen"},
+      {title: "Spesies Pejantan", dataIndex: "inseminasi.bangsaPejantan", key: "bangsaPejantan"},
       {title: "Eartag Anak", dataIndex: "eartagAnak", key: "eartagAnak"},
       { title: "Jenis Kelamin Anak", dataIndex: "jenisKelaminAnak", key: "jenisKelaminAnak"},
       {title: "Spesies", dataIndex: "spesies", key: "spesies"},
       {title: "Petugas Pelapor", dataIndex: "petugas.namaPetugas", key: "petugasPelapor"},
-      {title: "Urutan IB", dataIndex: "urutanIb", key: "urutanIb"}
+      {title: "Urutan IB", dataIndex: "inseminasi.ib", key: "ib"}
     ];
 
     const renderTable = () => {
