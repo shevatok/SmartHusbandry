@@ -296,13 +296,13 @@ class Vaksin extends Component {
         const petugasId = petugasData ? petugasData.nikPetugas : null;
         console.log(`Mencocokkan nama petugas: ${petugasNama}, Ditemukan: ${petugasData ? 'Ya' : 'Tidak'}, petugasId: ${petugasId}`);
         const dataToSave = {
-          idVaksin: row[columnMapping["ID"]],
-          namaVaksin: row[columnMapping["Nama Vaksin"]],
-          jenisVaksin: row[columnMapping["Jenis Vaksin"]],
-          peternak_id: row[columnMapping["ID Peternak"]],
-          hewan_id: row[columnMapping["Eartag"]],
-          petugas_id: petugasId,
-          tglVaksin: row[columnMapping["Tanggal Vaksin"]]
+          idVaksin: row[columnMapping["Batch Vaksin**)"]],
+          namaVaksin: row[columnMapping["Nama Vaksin**)"]],
+          jenisVaksin: row[columnMapping["Jenis Vaksin**)"]],
+          peternak_id: row[columnMapping["NIK Pemilik Ternak**)"]],
+          hewan_id: row[columnMapping["No. Eartag***)"]],
+          petugas_id: row[columnMapping["NIK Petugas Pendataan*)"]],
+          tglVaksin: row[columnMapping["Tanggal Vaksin**)"]]
         };
         const existingVaksinIndex = vaksins.findIndex(p => p.idVaksin === dataToSave.idVaksin);
   
@@ -359,7 +359,7 @@ class Vaksin extends Component {
       "Jenis Vaksin",
       "Lokasi",
       "Nama Peternak",
-      "ID Peternak",
+      "NIK Peternak",
       "Eartag Hewan",
       "Inseminator",
       "Tanggal Vaksin"
@@ -371,11 +371,11 @@ class Vaksin extends Component {
         item.idVaksin,
         item.namaVaksin,
         item.jenisVaksin,
-        item.lokasi,
-        item.namaPeternak,
-        item.idPeternak,
-        item.kodeEartagNasional,
-        item.inseminator,
+        item.peternak.lokasi,
+        item.peternak.namaPeternak,
+        item.peternak.idPeternak,
+        item.hewan.kodeEartagNasional,
+        item.petugas.namaPetugas,
         item.tglVaksin
       ];
       rows.push(row);

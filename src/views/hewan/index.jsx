@@ -11,6 +11,7 @@ import TypingCard from "@/components/TypingCard";
 import { reqUserInfo } from "../../api/user";
 import imgUrl from "../../utils/imageURL";
 import { getUserInfo } from "@/store/actions";
+import {kandangSapi} from '../../assets/images/kandangsapi.jpg'
 
 const { Column } = Table;
 class Hewan extends Component {
@@ -176,7 +177,23 @@ class Hewan extends Component {
         return;
       }
       this.setState({ addHewanModalLoading: true });
-      addHewan(values)
+      const hewanData = {
+        kodeEartagNasional : values.kodeEartagNasional,
+        noKartuTernak: values.noKartuTernak,
+        alamat :values.alamat,
+        latitude : values.latitude,
+        longitude : values.longitude,
+        peternak_id : values.peternak_id,
+        kandang_id : values.kandang_id,
+        spesies : values.spesies,
+        sex : values.sex,
+        umur : values.umur + " bulan",
+        identifikasiHewan : values.identifikasiHewan,
+        petugas_id : values.petugas_id,
+        tanggalTerdaftar : values.tanggalTerdaftar,
+        file : values.file,
+      }
+      addHewan(hewanData)
         .then((response) => {
           form.resetFields();
           this.setState({
@@ -311,6 +328,22 @@ class Hewan extends Component {
     return date;
   }
 
+  fetchCoordinates = async (address) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        return { lat: data[0].lat, lon: data[0].lon };
+      } else {
+        console.error("No coordinates found for the provided address:", address);
+        return { lat: null, lon: null };
+      }
+    } catch (error) {
+      console.error("Error converting address to coordinates:", error);
+      return { lat: null, lon: null };
+    }
+  };
+
   saveImportedData = async (columnMapping) => {
     const { importedData, hewans, petugas } = this.state;
     let errorCount = 0;
@@ -321,13 +354,14 @@ class Hewan extends Component {
         const petugasData = petugas.find(p => p.namaPetugas.toLowerCase() === petugasNama);
         const petugasId = petugasData ? petugasData.nikPetugas : null;
         console.log(`Mencocokkan nama petugas: ${petugasNama}, Ditemukan: ${petugasData ? 'Ya' : 'Tidak'}, petugasId: ${petugasId}`);
-        
+        const address = `${row[columnMapping["Desa"]]}, ${row[columnMapping["Kecamatan"]]}, ${row[columnMapping["Kabupaten"]]}, ${row[columnMapping["Provinsi"]]}`;
+        const { lat, lon } = await this.fetchCoordinates(address);
   
         const dataToSave = {
           kodeEartagNasional: row[columnMapping["Kode Eartag Nasional"]],
           alamat: row.alamat,
-          latitude: row[columnMapping["Latitude"]],
-          longitude: row[columnMapping["Longitude"]],
+          latitude: lat|| row[columnMapping["Latitude"]],
+          longitude: lon ||row[columnMapping["Longitude"]],
           peternak_id: row[columnMapping["ID Peternak"]],
           kandang_id: row[columnMapping["ID Kandang"]],
           spesies: row[columnMapping["Rumpun Ternak"]] || row[columnMapping["Spesies"]],
@@ -336,6 +370,7 @@ class Hewan extends Component {
           identifikasiHewan: row[columnMapping["Identifikasi Hewan*"]] || row[columnMapping["Identifikasi Hewan"]],
           petugas_id: petugasId,
           tanggalTerdaftar: this.convertToJSDate(row[columnMapping["Tanggal Terdaftar"]]),
+          file: kandangSapi
           
         };
         
@@ -408,15 +443,15 @@ class Hewan extends Component {
     data.forEach((item) => {
       const row = [
         item.kodeEartagNasional,
-        item.namaPeternak,
-        item.nikPeternak,
-        item.idKandang,
+        item.peternak.namaPeternak,
+        item.peternak.nikPeternak,
+        item.kandang.idKandang,
         item.alamat,
         item.spesies,
         item.sex,
         item.umur,
         item.identifikasiHewan,
-        item.petugasPendaftar,
+        item.petugas.namaPetugas,
         item.tanggalTerdaftar,
       ];
       rows.push(row);

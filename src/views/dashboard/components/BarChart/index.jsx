@@ -73,6 +73,7 @@ class BarChart extends Component {
     // Calculate the number of registrations per day
     peternaks.forEach((peternak) => {
       const date = new Date(peternak.tanggalPendaftaran);
+      console.log(date);
       const year = date.getFullYear();
       const month = date.getMonth() + 1; // Month is 0-based, so add 1 to get the correct month
       const day = date.getDate();

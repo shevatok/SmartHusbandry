@@ -5,11 +5,11 @@ const Dashboard = Loadable({
   loader: () => import(/*webpackChunkName:'Dashboard'*/ "@/views/dashboard"),
   loading: Loading,
 });
-const Berita = Loadable({
-  loader: () =>
-    import(/*webpackChunkName:'Berita'*/ "@/views/berita"),
-  loading: Loading,
-});
+// const Berita = Loadable({
+//   loader: () =>
+//     import(/*webpackChunkName:'Berita'*/ "@/views/berita"),
+//   loading: Loading,
+// });
 const Petugas = Loadable({
   loader: () =>
     import(/*webpackChunkName:'Petugas'*/ "@/views/petugas"),
@@ -84,11 +84,11 @@ export default [
     component: Dashboard,
     roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
   },
-  {
-    path: "/berita",
-    component: Berita,
-    roles: ["ROLE_ADMINISTRATOR"],
-  },
+  // {
+  //   path: "/berita",
+  //   component: Berita,
+  //   roles: ["ROLE_ADMINISTRATOR"],
+  // },
   {
     path: "/petugas",
     component: Petugas,

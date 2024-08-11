@@ -16,6 +16,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { reqUserInfo } from "../../api/user";
 import imgUrl from "../../utils/imageURL";
 
+import {kandangSapi} from '../../assets/images/kandangsapi.jpg'
+
 const { Column } = Table;
 class Kandang extends Component {
   state = {
@@ -244,8 +246,9 @@ class Kandang extends Component {
           kapasitas: row[columnMapping["Kapasitas"]],
           nilaiBangunan: row[columnMapping["Nilai Bangunan"]],
           alamat: row[columnMapping["Alamat"]],
-          latitude: lat,
-          longitude: lon,
+          latitude: lat || row[columnMapping["Latitude"]],
+          longitude: lon || row[columnMapping["Longitude"]] ,
+          file: kandangSapi
         };
   
         const existingKandangIndex = kandangs.findIndex(p => p.idKandang === dataToSave.idKandang);
@@ -301,8 +304,6 @@ class Kandang extends Component {
   convertToCSV = (data) => {
     const columnTitles = [
       "Id Kandang",
-      "Id Peternak",
-      "Nama Peternak",
       "Luas",
       "Kapasitas",
       "Nilai Bangunan",
@@ -313,8 +314,6 @@ class Kandang extends Component {
     data.forEach((item) => {
       const row = [
         item.idKandang,
-        item.idPeternak,
-        item.namaPeternak,
         item.luas,
         item.kapasitas,
         item.nilaiBangunan,
@@ -362,7 +361,18 @@ class Kandang extends Component {
         return;
       }
       this.setState({ addKandangModalLoading: true });
-      addKandang(values)
+      const kandangData = {
+        idKandang: values.idKandang,
+        peternak_id: values.peternak_id,
+        luas: values.luas + " m2",
+        kapasitas: values.kapasitas+" ekor",
+        nilaiBangunan: "Rp. "+values.nilaiBangunan,
+        alamat: values.alamat,
+        latitude: values.latitude,
+        longitude: values.longitude,
+        file: values.file,
+      };
+      addKandang(kandangData)
         .then((response) => {
           form.resetFields();
           this.setState({
@@ -399,8 +409,6 @@ class Kandang extends Component {
     const { kandangs, importModalVisible, searchKeyword, user } = this.state;
     const columns = [
       { title: "Id Kandang", dataIndex: "idKandang", key: "idKandang" },
-      { title: "Id Peternak", dataIndex: "peternak.idPeternak", key: "idPeternak" },
-      { title: "Nama Peternak", dataIndex: "peternak.namaPeternak", key: "namaPeternak" },
       { title: "Luas", dataIndex: "luas", key: "luas" },
       { title: "Kapasitas", dataIndex: "kapasitas", key: "kapasitas" },
       { title: "Nilai Bangunan", dataIndex: "nilaiBangunan", key: "nilaiBangunan" },

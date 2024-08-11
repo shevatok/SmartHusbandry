@@ -5,12 +5,12 @@ const menuList = [
     icon: "home",
     roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
   },
-  {
-    title: "Berita",
-    path: "/berita",
-    icon: "book",
-    roles:["ROLE_ADMINISTRATOR"]
-  },
+  // {
+  //   title: "Berita",
+  //   path: "/berita",
+  //   icon: "book",
+  //   roles:["ROLE_ADMINISTRATOR"]
+  // },
   {
     title: "Data Petugas",
     path: "/petugas",

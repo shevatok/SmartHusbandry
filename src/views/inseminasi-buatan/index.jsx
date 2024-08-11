@@ -302,7 +302,7 @@ class InseminasiBuatan extends Component {
           idInseminasi: row[columnMapping["ID"]],
           tanggalIB: this.convertToJSDate(row[columnMapping["Tanggal IB"]]),
           peternak_id: row[columnMapping["ID Peternak"]],
-          hewan_id: row[columnMapping["Eartag"]],
+          hewan_id:  row[columnMapping["ID Hewan"]],
           ib: row[columnMapping["IB 1"]],
           idPejantan: row[columnMapping["ID Pejantan"]],
           idPembuatan: row[columnMapping["ID Pembuatan"]],

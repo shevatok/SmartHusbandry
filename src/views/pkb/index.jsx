@@ -309,7 +309,7 @@ class Pkb extends Component {
           hewan_id: row[columnMapping["ID Hewan"]],
           spesies: row[columnMapping["Spesies"]],
           umurKebuntingan: row[columnMapping["Umur Kebuntingan saat PKB (bulan)"]],
-          petugas_id: petugasId,
+          petugas_id: row[columnMapping["Pemeriksa Kebuntingan"]],
         };
         const existingPkbIndex = pkb.findIndex(p => p.idKejadian === dataToSave.idKejadian);
   
@@ -365,12 +365,10 @@ class Pkb extends Component {
       "Tanggal PKB",
       "Lokasi",
       "Nama Peternak",
-      "ID Peternak",
       "NIK Peternak",
       "ID Hewan",
       "Spesies",
       "Kategori",
-      "Jumlah",
       "Umur Kebuntingan saat PKB (bulan)",
       "Pemeriksa Kebuntingan",
     ];
@@ -380,14 +378,12 @@ class Pkb extends Component {
       const row = [
         item.idKejadian,
         item.tanggalPkb,
-        item.lokasi,
-        item.namaPeternak,
-        item.idPeternak,
-        item.nikPeternak,
-        item.kodeEartagNasional,
+        item.peternak.lokasi,
+        item.peternak.namaPeternak,
+        item.peternak.nikPeternak,
+        item.hewan.kodeEartagNasional,
         item.spesies,
         item.kategori,
-        item.jumlah,
         item.umurKebuntingan,
         item.pemeriksaKebuntingan
       ];

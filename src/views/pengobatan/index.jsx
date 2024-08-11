@@ -188,7 +188,7 @@ class Pengobatan extends Component {
           idKasus: row[columnMapping["ID Kasus"]],
           tanggalPengobatan: this.convertToJSDate(row[columnMapping["tanggal_pengobatan"]]),
           tanggalKasus: this.convertToJSDate(row[columnMapping["tanggal_kasus"]]),
-          petugas_id: petugasId,
+          petugas_id: row[columnMapping["Petugas"]],
           namaInfrastruktur: row[columnMapping["Nama Infrasruktur"]],
           lokasi: row[columnMapping["Lokasi"]],
           dosis: row[columnMapping["Dosis"]],

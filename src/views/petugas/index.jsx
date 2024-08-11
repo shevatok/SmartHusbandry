@@ -73,6 +73,37 @@ class Petugas extends Component {
     });
   };
 
+  handleAddPetugas = (row) => {
+    this.setState({
+      addPetugasModalVisible: true,
+    });
+  };
+
+  handleAddPetugasOk = (_) => {
+    const { form } = this.addPetugasFormRef.props;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      this.setState({ addPetugasModalLoading: true });
+      addPetugas(values)
+        .then((response) => {
+          form.resetFields();
+          this.setState({
+            addPetugasModalVisible: false,
+            addPetugasModalLoading: false,
+          });
+          message.success("Berhasil menambahkan!");
+          this.getPetugas();
+        })
+        .catch((e) => {
+          message.success("Gagal menambahkan, harap coba lagi!");
+        });
+    });
+  };
+
+
+
   handleEditPetugas = (row) => {
     this.setState({
       currentRowData: Object.assign({}, row),

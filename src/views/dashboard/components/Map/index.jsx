@@ -80,6 +80,9 @@ class Map extends Component {
   const kapasitas = kdg.kapasitas;
   const nilaiBangunan = kdg.nilaiBangunan;
 
+  const jumlahHewan = hewans.filter(hwn => {return hwn.kandang.idKandang === idKandang;
+          }).length;
+
   if (!isNaN(kdgLatitude) && !isNaN(kdgLongitude)) {
     return (
       <Marker key={`kandang-${index}`} position={[kdgLatitude, kdgLongitude]} icon={pinKdg}>
@@ -87,6 +90,7 @@ class Map extends Component {
           <div>ID Kandang : {idKandang}</div>
           <div>Luas : {luas}</div>
           <div>Kapasitas : {kapasitas}</div>
+          <div>Jumlah Hewan : {jumlahHewan}</div>
           <div>Nilai Bangunan : {nilaiBangunan}</div>
         </Popup>
       </Marker>

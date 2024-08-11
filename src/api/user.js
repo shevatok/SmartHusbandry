@@ -15,11 +15,17 @@ export function getUsers() {
   });
 }
 
+export function getUserByUsername(username) {
+  return request({
+    url: `/user/${username}`,
+    method: "get",
+  });
+}
+
 export function deleteUser(data) {
   return request({
-    url: "/user/delete",
-    method: "post",
-    data,
+    url: `/user/${data.id}`,
+    method: "delete",
   });
 }
 

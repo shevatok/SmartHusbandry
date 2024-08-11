@@ -90,7 +90,7 @@ const Login = (props) => {
                     message: "Masukkan password",
                   },
                 ],
-                initialValue: "admin123", // 初始值
+                initialValue: "password", // 初始值
               })(
                 <Input
                   prefix={

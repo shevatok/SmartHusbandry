@@ -6,7 +6,7 @@ import {
   editPeternak,
   addPeternak,
 } from "@/api/peternak";
-import { register } from "@/api/user";
+import { register, deleteUser, getUserByUsername } from "@/api/user";
 import {getPetugas} from "@/api/petugas"
 import TypingCard from "@/components/TypingCard";
 import EditPeternakForm from "./forms/edit-peternak-form";
@@ -15,6 +15,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { read, utils } from "xlsx";
 import { reqUserInfo } from "../../api/user";
+import {kandangSapi} from '../../assets/images/kandangsapi.jpg'
 const { Column } = Table;
 
 
@@ -77,6 +78,15 @@ class Peternak extends Component {
     }
   };
 
+  fetchUserByUsername = async (username) => {
+    try {
+      const response = await getUserByUsername(username);
+      this.setState({ user: response.data });
+    } catch (error) {
+      console.error("Error fetching user by username:", error);
+    }
+  };
+
   handleSearch = (keyword) => {
     this.setState({
       searchKeyword: keyword,
@@ -93,20 +103,28 @@ class Peternak extends Component {
   };
 
   handleDeletePeternak = (row) => {
-    const { idPeternak } = row;
-    Modal.confirm({
-      title: "Konfirmasi",
-      content: "Apakah Anda yakin ingin menghapus data ini?",
-      okText: "Ya",
-      okType: "danger",
-      cancelText: "Tidak",
-      onOk: () => {
-        deletePeternak({ idPeternak }).then((res) => {
-          message.success("Berhasil dihapus");
-          this.getPeternaks();
-        });
-      },
-    });
+    const { idPeternak, nikPeternak } = row;
+    getUserByUsername(nikPeternak).then((userResponse) => {
+      if (userResponse && userResponse.data) {
+        const userId = userResponse.data.id;
+        console.log("user",userId)
+      Modal.confirm({
+        title: "Konfirmasi",
+        content: "Apakah Anda yakin ingin menghapus data ini?",
+        okText: "Ya",
+        okType: "danger",
+        cancelText: "Tidak",
+        onOk: () => {
+          deletePeternak({ idPeternak }).then((res) => {
+            message.success("Berhasil dihapus");
+            this.getPeternaks();
+          });
+          deleteUser({ userId }).then((res) => {
+            message.success("Berhasil dihapus");
+          });
+        },
+      });
+  }})
   };
 
   handleEditPeternakOk = (_) => {
@@ -196,30 +214,42 @@ class Peternak extends Component {
   
     try {
       for (const row of importedData) {
-        const dataToSave = {
+        const role = "3";
+        const dataToSaveUser = {
+          name: row[columnMapping["Nama Pemilik Ternak**)"]],
+          username: row[columnMapping["NIK Pemilik Ternak**)"]],
+          email:row[columnMapping["Nama Pemilik Ternak**)"]] + "@gmail.com",
+          password: row[columnMapping["NIK Pemilik Ternak**)"]],
+          roles: role,
+          photo: kandangSapi,
+        };
+        const dataToSavePeternak = {
           
           idPeternak: row[columnMapping["NIK Pemilik Ternak**)"]],
-          nikPeternak: row[columnMapping["No. Eartag***)"]],
+          nikPeternak: row[columnMapping["NIK Pemilik Ternak**)"]],
           namaPeternak: row[columnMapping["Nama Pemilik Ternak**)"] || columnMapping["nama"] ],
           lokasi: row[columnMapping["Alamat Pemilik Ternak**)"] || columnMapping["lokasi"]],
           petugas_id: row[columnMapping["Petugas Pendaftar"] || columnMapping["NIK Petugas Pendataan*)"]],
           tanggalPendaftaran: row[columnMapping["Tanggal Pendataan"]] || this.convertToJSDate(row[columnMapping["Tanggal Pendaftaran"]]),
         };
-        const existingPeternakIndex = peternaks.findIndex(p => p.idPeternak === dataToSave.idPeternak);
+        const existingPeternakIndex = peternaks.findIndex(p => p.idPeternak === dataToSavePeternak.idPeternak);
+        
         try {
+          
           if (existingPeternakIndex > -1) {
             // Update existing data
-            await editPeternak(dataToSave, dataToSave.idPeternak);
+            await editPeternak(dataToSavePeternak, dataToSavePeternak.idPeternak);
             this.setState((prevState) => {
               const updatedPeternak = [...prevState.peternaks];
-              updatedPeternak[existingPeternakIndex] = dataToSave;
+              updatedPeternak[existingPeternakIndex] = dataToSavePeternak;
               return { peternaks: updatedPeternak };
             });
           } else {
             // Add new data
-            await addPeternak(dataToSave);
+            await addPeternak(dataToSavePeternak);
+            await register(dataToSaveUser);
             this.setState((prevState) => ({
-              peternaks: [...prevState.peternaks, dataToSave],
+              peternaks: [...prevState.peternaks, dataToSavePeternak],
             }));
           }
         } catch (error) {
@@ -303,10 +333,11 @@ class Peternak extends Component {
     });
   };
 
+  
+
   componentDidMount() {
     this.getPeternaks();
     this.getPetugas();
-
     reqUserInfo()
       .then((response) => {
         this.setState({ user: response.data });
@@ -394,8 +425,7 @@ class Peternak extends Component {
   render() {
     const { peternaks, importModalVisible, searchKeyword, user } = this.state;
     const columns = [
-      {title:"NIK Peternak", dataIndex:"idPeternak", key:"idPeternak"},
-      {title:"ID Peternak", dataIndex:"nikPeternak", key:"nikPeternak"},
+      {title:"NIK Peternak", dataIndex:"nikPeternak", key:"nikPeternak"},
       {title:"Nama Peternak", dataIndex:"namaPeternak", key:"namaPeternak"},
       {title:"Lokasi", dataIndex:"lokasi", key:"lokasi"},
       {title:"Petugas Pendaftar", dataIndex:"petugas.namaPetugas", key:"namaPetugas"},
