@@ -104,7 +104,7 @@ class AddPeternakForm extends Component {
     const { provinces, regencies, districts, villages } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
-      labelCol: {
+      labelCol: { 
         xs: { span: 24 },
         sm: { span: 8 },
       },

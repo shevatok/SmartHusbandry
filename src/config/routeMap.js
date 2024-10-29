@@ -51,10 +51,14 @@ const PKB = Loadable({
   loading: Loading,
 });
 
-// const Monitoring = Loadable({
-//   loader: () => import(/*webpackChunkName:'Pkb'*/ "@/views/monitoring"),
-//   loading: Loading,
-// });
+const Monitoring = Loadable({
+  loader: () => import(/*webpackChunkName:'Pkb'*/ "@/views/monitoring"),
+  loading: Loading,
+});
+const jenishewan = Loadable({
+  loader: () => import(/*webpackChunkName:'Pkb'*/ "@/views/jenis-hewan"),
+  loading: Loading,
+});
 
 
 const RichTextEditor = Loadable({
@@ -134,8 +138,13 @@ export default [
     component: PKB, 
     roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"] 
   },
-  // { path: "/monitoring", 
-  //   component: Monitoring,
-  //   roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"] 
-  // },
+  { path: "/monitoring", 
+    component: Monitoring,
+    roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"] 
+  },
+  { path: "/jenis-hewan", 
+    component: jenishewan,
+    roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"] 
+  },
 ];
+

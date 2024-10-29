@@ -1,5 +1,17 @@
 import React, { Component } from "react";
-import { Card, Button, Table, message, Upload, Row, Col, Divider, Modal, Input } from "antd";
+import {
+  Card,
+  Button,
+  Table,
+  message,
+  Upload,
+  Row,
+  Col,
+  Divider,
+  Modal,
+  Input,
+} from "antd";
+
 import {
   getPeternaks,
   deletePeternak,
@@ -7,22 +19,21 @@ import {
   addPeternak,
 } from "@/api/peternak";
 import { register, deleteUser, getUserByUsername } from "@/api/user";
-import {getPetugas} from "@/api/petugas"
+import { getPetugas } from "@/api/petugas";
 import TypingCard from "@/components/TypingCard";
 import EditPeternakForm from "./forms/edit-peternak-form";
 import AddPeternakForm from "./forms/add-peternak-form";
-import { UploadOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import { UploadOutlined } from "@ant-design/icons";
+import ViewPeternakForm from "./forms/view-peternak-from";
+import moment from "moment";
 import { read, utils } from "xlsx";
 import { reqUserInfo } from "../../api/user";
-import {kandangSapi} from '../../assets/images/kandangsapi.jpg'
-const { Column } = Table;
-
+import { kandangSapi } from "../../assets/images/kandangsapi.jpg";
 
 class Peternak extends Component {
   constructor(props) {
-      super(props);
-      this.state = {
+    super(props);
+    this.state = {
       petugas: [],
       peternaks: [],
       editPeternakModalVisible: false,
@@ -34,33 +45,43 @@ class Peternak extends Component {
       importedData: [], // Tambahkan data import
       searchKeyword: "",
       user: null,
+      viewPeternakModalVisible: false, // Tambahkan state untuk modal view
+      viewRowData: {}, // Data peternak yang akan ditampilkan di modal view
     };
   }
 
   getPeternaks = async () => {
     const result = await getPeternaks();
     const { content, statusCode } = result.data;
-  
+
     if (statusCode === 200) {
       const filteredPeternaks = content.filter((peternak) => {
-        const { namaPeternak, nikPeternak, idPeternak, petugasPendaftar, lokasi } = peternak;
+        const {
+          namaPeternak,
+          nikPeternak,
+          idPeternak,
+          petugasPendaftar,
+          lokasi,
+        } = peternak;
         const keyword = this.state.searchKeyword.toLowerCase();
-        
-        const isNamaPeternakValid = typeof namaPeternak === 'string';
-        const isNikPeternakValid = typeof nikPeternak === 'string';
-        const isIdPeternakValid = typeof idPeternak === 'string';
-        const isPetugasPendaftarValid = typeof petugasPendaftar === 'string';
-        const isLokasiValid = typeof lokasi === 'string';
+
+        const isNamaPeternakValid = typeof namaPeternak === "string";
+        const isNikPeternakValid = typeof nikPeternak === "string";
+        const isIdPeternakValid = typeof idPeternak === "string";
+        const isPetugasPendaftarValid = typeof petugasPendaftar === "string";
+        const isLokasiValid = typeof lokasi === "string";
 
         return (
-          (isNamaPeternakValid && namaPeternak.toLowerCase().includes(keyword)) ||
+          (isNamaPeternakValid &&
+            namaPeternak.toLowerCase().includes(keyword)) ||
           (isNikPeternakValid && nikPeternak.toLowerCase().includes(keyword)) ||
           (isIdPeternakValid && idPeternak.toLowerCase().includes(keyword)) ||
-          (isPetugasPendaftarValid && petugasPendaftar.toLowerCase().includes(keyword)) ||
+          (isPetugasPendaftarValid &&
+            petugasPendaftar.toLowerCase().includes(keyword)) ||
           (isLokasiValid && lokasi.toLowerCase().includes(keyword))
         );
       });
-  
+
       this.setState({
         peternaks: filteredPeternaks,
       });
@@ -70,7 +91,7 @@ class Peternak extends Component {
   getPetugas = async () => {
     const result = await getPetugas();
     const { content, statusCode } = result.data;
-  
+
     if (statusCode === 200) {
       this.setState({
         petugas: content,
@@ -88,11 +109,14 @@ class Peternak extends Component {
   };
 
   handleSearch = (keyword) => {
-    this.setState({
-      searchKeyword: keyword,
-    }, () => {
-      this.getPeternaks(); 
-    });
+    this.setState(
+      {
+        searchKeyword: keyword,
+      },
+      () => {
+        this.getPeternaks();
+      }
+    );
   };
 
   handleEditPeternak = (row) => {
@@ -102,29 +126,37 @@ class Peternak extends Component {
     });
   };
 
+  handleViewPeternak = (row) => {
+    this.setState({
+      viewRowData: row,
+      viewPeternakModalVisible: true,
+    });
+  };
+
   handleDeletePeternak = (row) => {
     const { idPeternak, nikPeternak } = row;
     getUserByUsername(nikPeternak).then((userResponse) => {
       if (userResponse && userResponse.data) {
         const userId = userResponse.data.id;
-        console.log("user",userId)
-      Modal.confirm({
-        title: "Konfirmasi",
-        content: "Apakah Anda yakin ingin menghapus data ini?",
-        okText: "Ya",
-        okType: "danger",
-        cancelText: "Tidak",
-        onOk: () => {
-          deletePeternak({ idPeternak }).then((res) => {
-            message.success("Berhasil dihapus");
-            this.getPeternaks();
-          });
-          deleteUser({ userId }).then((res) => {
-            message.success("Berhasil dihapus");
-          });
-        },
-      });
-  }})
+        console.log("user", userId);
+        Modal.confirm({
+          title: "Konfirmasi",
+          content: "Apakah Anda yakin ingin menghapus data ini?",
+          okText: "Ya",
+          okType: "danger",
+          cancelText: "Tidak",
+          onOk: () => {
+            deletePeternak({ idPeternak }).then((res) => {
+              message.success("Berhasil dihapus");
+              this.getPeternaks();
+            });
+            deleteUser({ userId }).then((res) => {
+              message.success("Berhasil dihapus");
+            });
+          },
+        });
+      }
+    });
   };
 
   handleEditPeternakOk = (_) => {
@@ -154,28 +186,33 @@ class Peternak extends Component {
   handleImportModalOpen = () => {
     this.setState({ importModalVisible: true });
   };
-  
+
   handleImportModalClose = () => {
     this.setState({ importModalVisible: false });
+  };
+  handleViewModalCancel = () => {
+    this.setState({
+      viewPeternakModalVisible: false,
+    });
   };
 
   handleFileImport = (file) => {
     const reader = new FileReader();
-  
+
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
       const workbook = read(data, { type: "array" });
-  
+
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = utils.sheet_to_json(worksheet, { header: 1 });
-  
+
       const importedData = jsonData.slice(1); // Exclude the first row (column titles)
-  
+
       const columnTitles = jsonData[0]; // Assume the first row contains column titles
-  
+
       // Get the file name from the imported file
       const fileName = file.name.toLowerCase();
-  
+
       this.setState({
         importedData,
         columnTitles,
@@ -194,51 +231,71 @@ class Peternak extends Component {
 
   convertToJSDate(input) {
     let date;
-    
-    if (typeof input === 'number') {
+
+    if (typeof input === "number") {
       const utcDays = Math.floor(input - 25569);
       const utcValue = utcDays * 86400;
       const dateInfo = new Date(utcValue * 1000);
-      date = new Date(dateInfo.getFullYear(), dateInfo.getMonth(), dateInfo.getDate()).toString();
-    } else if (typeof input === 'string') {
-      const [day, month, year] = input.split('/');
+      date = new Date(
+        dateInfo.getFullYear(),
+        dateInfo.getMonth(),
+        dateInfo.getDate()
+      ).toString();
+    } else if (typeof input === "string") {
+      const [day, month, year] = input.split("/");
       date = new Date(`${year}-${month}-${day}`).toString();
     }
-  
+
     return date;
   }
 
   saveImportedData = async (columnMapping) => {
     const { importedData, peternaks } = this.state;
     let errorCount = 0;
-  
+
     try {
       for (const row of importedData) {
         const role = "3";
         const dataToSaveUser = {
           name: row[columnMapping["Nama Pemilik Ternak**)"]],
           username: row[columnMapping["NIK Pemilik Ternak**)"]],
-          email:row[columnMapping["Nama Pemilik Ternak**)"]] + "@gmail.com",
+          email: row[columnMapping["Nama Pemilik Ternak**)"]] + "@gmail.com",
           password: row[columnMapping["NIK Pemilik Ternak**)"]],
           roles: role,
           photo: kandangSapi,
         };
         const dataToSavePeternak = {
-          
           idPeternak: row[columnMapping["NIK Pemilik Ternak**)"]],
           nikPeternak: row[columnMapping["NIK Pemilik Ternak**)"]],
-          namaPeternak: row[columnMapping["Nama Pemilik Ternak**)"] || columnMapping["nama"] ],
-          lokasi: row[columnMapping["Alamat Pemilik Ternak**)"] || columnMapping["lokasi"]],
-          petugas_id: row[columnMapping["Petugas Pendaftar"] || columnMapping["NIK Petugas Pendataan*)"]],
-          tanggalPendaftaran: row[columnMapping["Tanggal Pendataan"]] || this.convertToJSDate(row[columnMapping["Tanggal Pendaftaran"]]),
+          namaPeternak:
+            row[
+              columnMapping["Nama Pemilik Ternak**)"] || columnMapping["nama"]
+            ],
+          lokasi:
+            row[
+              columnMapping["Alamat Pemilik Ternak**)"] ||
+                columnMapping["lokasi"]
+            ],
+          petugas_id:
+            row[
+              columnMapping["Petugas Pendaftar"] ||
+                columnMapping["NIK Petugas Pendataan*)"]
+            ],
+          tanggalPendaftaran:
+            row[columnMapping["Tanggal Pendataan"]] ||
+            this.convertToJSDate(row[columnMapping["Tanggal Pendaftaran"]]),
         };
-        const existingPeternakIndex = peternaks.findIndex(p => p.idPeternak === dataToSavePeternak.idPeternak);
-        
+        const existingPeternakIndex = peternaks.findIndex(
+          (p) => p.idPeternak === dataToSavePeternak.idPeternak
+        );
+
         try {
-          
           if (existingPeternakIndex > -1) {
             // Update existing data
-            await editPeternak(dataToSavePeternak, dataToSavePeternak.idPeternak);
+            await editPeternak(
+              dataToSavePeternak,
+              dataToSavePeternak.idPeternak
+            );
             this.setState((prevState) => {
               const updatedPeternak = [...prevState.peternaks];
               updatedPeternak[existingPeternakIndex] = dataToSavePeternak;
@@ -257,13 +314,12 @@ class Peternak extends Component {
           console.error("Gagal menyimpan data:", error);
         }
       }
-  
+
       if (errorCount === 0) {
         message.success(`Semua data berhasil disimpan.`);
       } else {
         message.error(`${errorCount} data gagal disimpan, harap coba lagi!`);
       }
-  
     } catch (error) {
       console.error("Gagal memproses data:", error);
     } finally {
@@ -274,7 +330,6 @@ class Peternak extends Component {
       });
     }
   };
-  
 
   handleCancel = (_) => {
     this.setState({
@@ -308,15 +363,15 @@ class Peternak extends Component {
         petugas_id: values.petugas_id,
         tanggalPendaftaran: values.tanggalPendaftaran,
       };
-  
+
       const userData = {
         name: values.namaPeternak,
         username: values.nikPeternak,
-        email:values.namaPeternak+"@gmail.com",
+        email: values.namaPeternak + "@gmail.com",
         password: values.nikPeternak,
         roles: "3",
       };
-      addPeternak(peternakData)
+      addPeternak(peternakData);
       register(userData)
         .then((response) => {
           form.resetFields();
@@ -333,8 +388,6 @@ class Peternak extends Component {
     });
   };
 
-  
-
   componentDidMount() {
     this.getPeternaks();
     this.getPetugas();
@@ -350,14 +403,14 @@ class Peternak extends Component {
   //Fungsi Upload data dan save ke database
   handleUpload = () => {
     const { importedData, columnMapping } = this.state;
-  
+
     if (importedData.length === 0) {
       message.error("No data to import.");
       return;
     }
-  
+
     this.setState({ uploading: true });
-  
+
     this.saveImportedData(columnMapping)
       .then(() => {
         this.setState({
@@ -371,7 +424,7 @@ class Peternak extends Component {
         message.error("Gagal mengunggah data, harap coba lagi.");
       });
   };
-  
+
   //Fungsi Export dari database ke file csv
   handleExportData = () => {
     const { peternaks } = this.state;
@@ -421,39 +474,74 @@ class Peternak extends Component {
     document.body.appendChild(link); // Required for Firefox
     link.click();
   };
-  
+
   render() {
-    const { peternaks, importModalVisible, searchKeyword, user } = this.state;
+    const {
+      peternaks,
+      importModalVisible,
+      searchKeyword,
+      user,
+      viewPeternakModalVisible,
+      viewRowData,
+    } = this.state;
     const columns = [
-      {title:"NIK Peternak", dataIndex:"nikPeternak", key:"nikPeternak"},
-      {title:"Nama Peternak", dataIndex:"namaPeternak", key:"namaPeternak"},
-      {title:"Lokasi", dataIndex:"lokasi", key:"lokasi"},
-      {title:"Petugas Pendaftar", dataIndex:"petugas.namaPetugas", key:"namaPetugas"},
-      {title:"Tanggal Pendaftaran", dataIndex:"tanggalPendaftaran", key:"tanggalPendaftaran"},
+      { title: "NIK Peternak", dataIndex: "nikPeternak", key: "nikPeternak" },
+      {
+        title: "Nama Peternak",
+        dataIndex: "namaPeternak",
+        key: "namaPeternak",
+      },
+      { title: "Lokasi", dataIndex: "lokasi", key: "lokasi" },
+      {
+        title: "Petugas Pendaftar",
+        dataIndex: "petugas.namaPetugas",
+        key: "namaPetugas",
+      },
+      {
+        title: "Tanggal Pendaftaran",
+        dataIndex: "tanggalPendaftaran",
+        key: "tanggalPendaftaran",
+      },
     ];
+
     console.log(peternaks);
     const renderTable = () => {
-      if (user &&  user.role === 'ROLE_PETERNAK') {
+      if (user && user.role === "ROLE_PETERNAK") {
         return <Table dataSource={peternaks} bordered columns={columns} />;
-      } else if (user && user.role === 'ROLE_ADMINISTRATOR' || 'ROLE_PETUGAS') {
-        return <Table dataSource={peternaks} bordered columns={(columns && renderColumns())}/>
-      }
-      else {
+        // eslint-disable-next-line no-mixed-operators
+      } else if (
+        (user && user.role === "ROLE_ADMINISTRATOR") ||
+        "ROLE_PETUGAS"
+      ) {
+        return (
+          <Table
+            dataSource={peternaks}
+            bordered
+            columns={columns && renderColumns()}
+          />
+        );
+      } else {
         return null;
       }
     };
-  
+
     const renderButtons = () => {
-      if (user && (user.role === 'ROLE_ADMINISTRATOR' || user.role === 'ROLE_PETUGAS')) {
+      if (
+        user &&
+        (user.role === "ROLE_ADMINISTRATOR" || user.role === "ROLE_PETUGAS")
+      ) {
         return (
-          <Row gutter={[16, 16]} justify="start" style={{paddingLeft: 9}}>
+          <Row gutter={[16, 16]} justify="start" style={{ paddingLeft: 9 }}>
             <Col xs={24} sm={12} md={8} lg={6} xl={6}>
               <Button type="primary" onClick={this.handleAddPeternak}>
                 Tambah Peternak
               </Button>
             </Col>
             <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-              <Button icon={<UploadOutlined />} onClick={this.handleImportModalOpen}>
+              <Button
+                icon={<UploadOutlined />}
+                onClick={this.handleImportModalOpen}
+              >
                 Import File
               </Button>
             </Col>
@@ -468,13 +556,14 @@ class Peternak extends Component {
         return null;
       }
     };
-  
+
     const renderColumns = () => {
-      if (user && user.role === 'ROLE_ADMINISTRATOR' || 'ROLE_PETUGAS') {
+      // eslint-disable-next-line no-mixed-operators
+      if ((user && user.role === "ROLE_ADMINISTRATOR") || "ROLE_PETUGAS") {
         columns.push({
           title: "Operasi",
           key: "action",
-          width: 120,
+          width: 170,
           align: "center",
           render: (text, row) => (
             <span>
@@ -484,6 +573,14 @@ class Peternak extends Component {
                 icon="edit"
                 title="Edit"
                 onClick={() => this.handleEditPeternak(row)}
+              />
+              <Divider type="vertical" />
+              <Button
+                type="primary"
+                shape="circle"
+                icon="eye"
+                title="View"
+                onClick={() => this.handleViewPeternak(row)}
               />
               <Divider type="vertical" />
               <Button
@@ -499,7 +596,7 @@ class Peternak extends Component {
       }
       return columns;
     };
-  
+
     const title = (
       <Row gutter={[16, 16]} justify="start">
         {renderButtons()}
@@ -513,16 +610,16 @@ class Peternak extends Component {
         </Col>
       </Row>
     );
-  
-    const { role } = user ? user.role : '';
-    console.log("peran pengguna:",role);
+
+    const { role } = user ? user.role : "";
+    console.log("peran pengguna:", role);
     const cardContent = `Di sini, Anda dapat mengelola daftar peternak di sistem.`;
     return (
       <div className="app-container">
         <TypingCard title="Manajemen Peternak" source={cardContent} />
         <br />
         <Card title={title} style={{ overflowX: "scroll" }}>
-        {renderTable()}
+          {renderTable()}
         </Card>
         <EditPeternakForm
           currentRowData={this.state.currentRowData}
@@ -535,13 +632,16 @@ class Peternak extends Component {
           onOk={this.handleEditPeternakOk}
         />
         <AddPeternakForm
-          wrappedComponentRef={(formRef) =>
-            (this.addPeternakFormRef = formRef)
-          }
+          wrappedComponentRef={(formRef) => (this.addPeternakFormRef = formRef)}
           visible={this.state.addPeternakModalVisible}
           confirmLoading={this.state.addPeternakModalLoading}
           onCancel={this.handleCancel}
           onOk={this.handleAddPeternakOk}
+        />
+        <ViewPeternakForm
+          viewPeternakModalVisible={viewPeternakModalVisible}
+          handleViewModalCancel={this.handleViewModalCancel}
+          viewRowData={viewRowData}
         />
         <Modal
           title="Import File"

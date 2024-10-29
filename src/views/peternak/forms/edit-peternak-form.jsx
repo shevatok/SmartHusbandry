@@ -11,22 +11,120 @@ class EditPeternakForm extends Component {
     districts: [],
     villages: [],
     petugasList: [], // To store the list of petugas names
+    selectedProvince: undefined,
+    selectedRegency: undefined,
+    selectedDistrict: undefined,
+    selectedVillage: undefined,
   };
 
   componentDidMount() {
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-      .then((response) => response.json())
-      .then((provinces) => this.setState({ provinces }));
+    this.fetchProvinces();
     this.fetchPetugasList();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { currentRowData } = this.props;
+    if (
+      prevProps.currentRowData.lokasi !== currentRowData.lokasi &&
+      currentRowData.lokasi
+    ) {
+      this.initializeForm();
+    }
+  }
+
+  fetchProvinces = () => {
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+      .then((response) => response.json())
+      .then((provinces) => {
+        this.setState({ provinces }, () => {
+          this.initializeForm();
+        });
+      });
+  };
+
+  initializeForm = () => {
+    const { currentRowData } = this.props;
+    const { lokasi } = currentRowData;
+
+    if (lokasi) {
+      const [village, district, regency, province] = lokasi
+        .split(", ")
+        .map((item) => item.trim());
+
+      this.setState(
+        {
+          selectedProvince: province,
+          selectedRegency: regency,
+          selectedDistrict: district,
+          selectedVillage: village,
+        },
+        () => {
+          this.loadRegencies(province);
+        }
+      );
+    }
+  };
+
+  loadRegencies = (province) => {
+    const selectedProvinceData = this.state.provinces.find(
+      (prov) => prov.name === province
+    );
+    if (selectedProvinceData) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceData.id}.json`
+      )
+        .then((response) => response.json())
+        .then((regencies) =>
+          this.setState({ regencies }, () => {
+            this.loadDistricts(this.state.selectedRegency);
+          })
+        );
+    }
+  };
+
+  loadDistricts = (regency) => {
+    const selectedRegencyData = this.state.regencies.find(
+      (reg) => reg.name === regency
+    );
+    if (selectedRegencyData) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegencyData.id}.json`
+      )
+        .then((response) => response.json())
+        .then((districts) =>
+          this.setState({ districts }, () => {
+            this.loadVillages(this.state.selectedDistrict);
+          })
+        );
+    }
+  };
+
+  loadVillages = (district) => {
+    const selectedDistrictData = this.state.districts.find(
+      (dist) => dist.name === district
+    );
+    if (selectedDistrictData) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrictData.id}.json`
+      )
+        .then((response) => response.json())
+        .then((villages) => this.setState({ villages }));
+    }
+  };
+
   handleProvinceChange = (value) => {
-    const selectedProvince = this.state.provinces.find((province) => province.name === value);
+    const selectedProvince = this.state.provinces.find(
+      (province) => province.name === value
+    );
 
     if (selectedProvince) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`
+      )
         .then((response) => response.json())
-        .then((regencies) => this.setState({ regencies }));
+        .then((regencies) =>
+          this.setState({ regencies, districts: [], villages: [] })
+        );
     }
 
     this.props.form.setFieldsValue({
@@ -37,12 +135,16 @@ class EditPeternakForm extends Component {
   };
 
   handleRegencyChange = (value) => {
-    const selectedRegency = this.state.regencies.find((regency) => regency.name === value);
+    const selectedRegency = this.state.regencies.find(
+      (regency) => regency.name === value
+    );
 
     if (selectedRegency) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`
+      )
         .then((response) => response.json())
-        .then((districts) => this.setState({ districts }));
+        .then((districts) => this.setState({ districts, villages: [] }));
     }
 
     this.props.form.setFieldsValue({
@@ -52,10 +154,14 @@ class EditPeternakForm extends Component {
   };
 
   handleDistrictChange = (value) => {
-    const selectedDistrict = this.state.districts.find((district) => district.name === value);
+    const selectedDistrict = this.state.districts.find(
+      (district) => district.name === value
+    );
 
     if (selectedDistrict) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`
+      )
         .then((response) => response.json())
         .then((villages) => this.setState({ villages }));
     }
@@ -67,12 +173,23 @@ class EditPeternakForm extends Component {
 
   handleVillageChange = (value) => {
     const { provinces, regencies, districts, villages } = this.state;
-    const selectedProvince = provinces.find((province) => province.name === this.props.form.getFieldValue("provinsi"));
-    const selectedRegency = regencies.find((regency) => regency.name === this.props.form.getFieldValue("kabupaten"));
-    const selectedDistrict = districts.find((district) => district.name === this.props.form.getFieldValue("kecamatan"));
+    const selectedProvince = provinces.find(
+      (province) => province.name === this.props.form.getFieldValue("provinsi")
+    );
+    const selectedRegency = regencies.find(
+      (regency) => regency.name === this.props.form.getFieldValue("kabupaten")
+    );
+    const selectedDistrict = districts.find(
+      (district) => district.name === this.props.form.getFieldValue("kecamatan")
+    );
     const selectedVillage = villages.find((village) => village.name === value);
 
-    if (selectedProvince && selectedRegency && selectedDistrict && selectedVillage) {
+    if (
+      selectedProvince &&
+      selectedRegency &&
+      selectedDistrict &&
+      selectedVillage
+    ) {
       const mergedLocation = `${selectedVillage.name}, ${selectedDistrict.name}, ${selectedRegency.name}, ${selectedProvince.name}`;
       this.setState({ mergedLocation });
       this.props.form.setFieldsValue({
@@ -89,7 +206,7 @@ class EditPeternakForm extends Component {
         // Extract petugas names and nikPetugas
         const petugasList = content.map((petugas) => ({
           nikPetugas: petugas.nikPetugas,
-          namaPetugas: petugas.namaPetugas
+          namaPetugas: petugas.namaPetugas,
         }));
         this.setState({ petugasList });
       }
@@ -100,8 +217,18 @@ class EditPeternakForm extends Component {
   };
 
   render() {
-    const { visible, onCancel, onOk, form, confirmLoading, currentRowData } = this.props;
-    const { provinces, regencies, districts, villages } = this.state;
+    const { visible, onCancel, onOk, form, confirmLoading, currentRowData } =
+      this.props;
+    const {
+      provinces,
+      regencies,
+      districts,
+      villages,
+      selectedProvince,
+      selectedRegency,
+      selectedDistrict,
+      selectedVillage,
+    } = this.state;
     const { getFieldDecorator } = form;
     const {
       idPeternak,
@@ -135,7 +262,7 @@ class EditPeternakForm extends Component {
           <Form.Item label="ID Peternak:">
             {getFieldDecorator("idPeternak", {
               initialValue: idPeternak,
-            })(<Input  />)}
+            })(<Input />)}
           </Form.Item>
           <Form.Item label="Nama Peternak:">
             {getFieldDecorator("namaPeternak", {
@@ -148,8 +275,13 @@ class EditPeternakForm extends Component {
             })(<Input placeholder="Masukkan NIK Peternak" />)}
           </Form.Item>
           <Form.Item label="Provinsi:">
-            {getFieldDecorator("provinsi")(
-              <Select placeholder="Masukkan provinsi" onChange={this.handleProvinceChange}>
+            {getFieldDecorator("provinsi", {
+              initialValue: selectedProvince,
+            })(
+              <Select
+                placeholder="Masukkan provinsi"
+                onChange={this.handleProvinceChange}
+              >
                 {provinces.map((province) => (
                   <Select.Option key={province.id} value={province.name}>
                     {province.name}
@@ -159,8 +291,13 @@ class EditPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Kabupaten:">
-            {getFieldDecorator("kabupaten")(
-              <Select placeholder="Masukkan kabupaten" onChange={this.handleRegencyChange}>
+            {getFieldDecorator("kabupaten", {
+              initialValue: selectedRegency,
+            })(
+              <Select
+                placeholder="Masukkan kabupaten"
+                onChange={this.handleRegencyChange}
+              >
                 {regencies.map((regency) => (
                   <Select.Option key={regency.id} value={regency.name}>
                     {regency.name}
@@ -170,8 +307,13 @@ class EditPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Kecamatan:">
-            {getFieldDecorator("kecamatan")(
-              <Select placeholder="Masukkan kecamatan" onChange={this.handleDistrictChange}>
+            {getFieldDecorator("kecamatan", {
+              initialValue: selectedDistrict,
+            })(
+              <Select
+                placeholder="Masukkan kecamatan"
+                onChange={this.handleDistrictChange}
+              >
                 {districts.map((district) => (
                   <Select.Option key={district.id} value={district.name}>
                     {district.name}
@@ -181,8 +323,13 @@ class EditPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Desa:">
-            {getFieldDecorator("desa")(
-              <Select placeholder="Masukkan Desa" onChange={this.handleVillageChange}>
+            {getFieldDecorator("desa", {
+              initialValue: selectedVillage,
+            })(
+              <Select
+                placeholder="Masukkan Desa"
+                onChange={this.handleVillageChange}
+              >
                 {villages.map((village) => (
                   <Select.Option key={village.id} value={village.name}>
                     {village.name}
@@ -222,6 +369,4 @@ class EditPeternakForm extends Component {
   }
 }
 
-export default Form.create({ name: "EditPeternakForm" })(
-  EditPeternakForm
-);
+export default Form.create({ name: "EditPeternakForm" })(EditPeternakForm);

@@ -78,6 +78,11 @@ class Petugas extends Component {
       addPetugasModalVisible: true,
     });
   };
+  handleclosePetugas = (row) => {
+    this.setState({
+      addPetugasModalVisible: false,
+    });
+  };
 
   handleAddPetugasOk = (_) => {
     const { form } = this.addPetugasFormRef.props;
@@ -358,7 +363,7 @@ class Petugas extends Component {
         columns.push({
           title: "Operasi",
           key: "action",
-          width: 120,
+          width: 170,
           align: "center",
           render: (text, row) => (
             <span>
@@ -375,6 +380,14 @@ class Petugas extends Component {
                 shape="circle"
                 icon="delete"
                 title="Delete"
+                onClick={() => this.handleDeletePetugas(row)}
+              />
+              <Divider type="vertical" />
+              <Button
+                type="primary"
+                shape="circle"
+                icon="eye"
+                title="View"
                 onClick={() => this.handleDeletePetugas(row)}
               />
             </span>
@@ -424,7 +437,7 @@ class Petugas extends Component {
           }
           visible={this.state.addPetugasModalVisible}
           confirmLoading={this.state.addPetugasModalLoading}
-          onCancel={this.handleCancel}
+          onCancel={this.handleclosePetugas}
           onOk={this.handleAddPetugasOk}
         />
         <Modal

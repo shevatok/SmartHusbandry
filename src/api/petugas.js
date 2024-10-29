@@ -30,3 +30,4 @@ export function deletePetugas(data) {
     data,
   });
 }
+

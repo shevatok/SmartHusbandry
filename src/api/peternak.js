@@ -30,3 +30,10 @@ export function deletePeternak(data) {
     data,
   });
 }
+export const getPeternakById = (id) => {
+  return request({
+    url: `/peternak/${id}`,
+    method: 'get'
+  });
+};
+

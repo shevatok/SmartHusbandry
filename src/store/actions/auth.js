@@ -1,6 +1,7 @@
 import { setUserToken, resetUser } from "./user";
 import { reqLogin, reqLogout } from "@/api/login";
 import { setToken, removeToken } from "@/utils/auth";
+
 export const login = (usernameOrEmail, password) => (dispatch) => {
   return new Promise((resolve, reject) => {
     reqLogin({ usernameOrEmail: usernameOrEmail.trim(), password: password })

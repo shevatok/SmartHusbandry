@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Input, Modal, Upload, Select, Icon } from "antd";
 import { getPetugas } from "@/api/petugas"; // Import the API function to fetch petugas data
-import { getPeternaks } from "@/api/peternak"; 
+import { getPeternaks } from "@/api/peternak";
 
 const { Option } = Select;
 
@@ -18,7 +18,7 @@ class EditDataternakForm extends Component {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
       .then((response) => response.json())
       .then((provinces) => this.setState({ provinces }));
-    this.fetchPeternakList(); 
+    this.fetchPeternakList();
   }
 
   fetchPeternakList = async () => {
@@ -28,7 +28,7 @@ class EditDataternakForm extends Component {
       if (statusCode === 200) {
         const peternakList = content.map((peternak) => ({
           idPeternak: peternak.idPeternak,
-          namaPeternak: peternak.namaPeternak
+          namaPeternak: peternak.namaPeternak,
         }));
         this.setState({ peternakList });
       }
@@ -39,10 +39,14 @@ class EditDataternakForm extends Component {
   };
 
   handleProvinceChange = (value) => {
-    const selectedProvince = this.state.provinces.find((province) => province.name === value);
+    const selectedProvince = this.state.provinces.find(
+      (province) => province.name === value
+    );
 
     if (selectedProvince) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`
+      )
         .then((response) => response.json())
         .then((regencies) => this.setState({ regencies }));
     }
@@ -55,10 +59,14 @@ class EditDataternakForm extends Component {
   };
 
   handleRegencyChange = (value) => {
-    const selectedRegency = this.state.regencies.find((regency) => regency.name === value);
+    const selectedRegency = this.state.regencies.find(
+      (regency) => regency.name === value
+    );
 
     if (selectedRegency) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`
+      )
         .then((response) => response.json())
         .then((districts) => this.setState({ districts }));
     }
@@ -70,10 +78,14 @@ class EditDataternakForm extends Component {
   };
 
   handleDistrictChange = (value) => {
-    const selectedDistrict = this.state.districts.find((district) => district.name === value);
+    const selectedDistrict = this.state.districts.find(
+      (district) => district.name === value
+    );
 
     if (selectedDistrict) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`
+      )
         .then((response) => response.json())
         .then((villages) => this.setState({ villages }));
     }
@@ -98,8 +110,8 @@ class EditDataternakForm extends Component {
       kecamatan,
       desa,
     } = currentRowData;
-    const { provinces, regencies, districts, villages, peternakList  } = this.state;
-
+    const { provinces, regencies, districts, villages, peternakList } =
+      this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -124,11 +136,11 @@ class EditDataternakForm extends Component {
           <Form.Item label="Id Kandang:">
             {getFieldDecorator("idKandang", {
               initialValue: idKandang,
-            })(<Input/>)}
+            })(<Input />)}
           </Form.Item>
           <Form.Item label="Nama Peternak:">
             {getFieldDecorator("peternak_id", {
-              initialValue: peternak? peternak.namaPeternak : undefined,
+              initialValue: peternak ? peternak.namaPeternak : undefined,
               rules: [
                 { required: true, message: "Silahkan isi nama peternak!" },
               ],
@@ -146,6 +158,14 @@ class EditDataternakForm extends Component {
             {getFieldDecorator("luas", {
               initialValue: luas,
             })(<Input placeholder="Masukkan Luas Kandang" />)}
+          </Form.Item>
+          <Form.Item label="Jenis Hewan">
+            {getFieldDecorator("jenis_id", {
+              initialValue: currentRowData.jenisHewan,
+              rules: [
+                { required: true, message: "Harap masukkan jenis hewan!" },
+              ],
+            })(<Input placeholder="Masukkan Jenis Hewan" />)}
           </Form.Item>
           <Form.Item label="Kapasitas Kandang:">
             {getFieldDecorator("kapasitas", {
@@ -166,7 +186,10 @@ class EditDataternakForm extends Component {
             {getFieldDecorator("provinsi", {
               initialValue: provinsi,
             })(
-              <Select placeholder="Masukkan provinsi" onChange={this.handleProvinceChange}>
+              <Select
+                placeholder="Masukkan provinsi"
+                onChange={this.handleProvinceChange}
+              >
                 {provinces.map((province) => (
                   <Select.Option key={province.id} value={province.name}>
                     {province.name}
@@ -179,7 +202,10 @@ class EditDataternakForm extends Component {
             {getFieldDecorator("kabupaten", {
               initialValue: kabupaten,
             })(
-              <Select placeholder="Masukkan kabupaten" onChange={this.handleRegencyChange}>
+              <Select
+                placeholder="Masukkan kabupaten"
+                onChange={this.handleRegencyChange}
+              >
                 {regencies.map((regency) => (
                   <Select.Option key={regency.id} value={regency.name}>
                     {regency.name}
@@ -192,7 +218,10 @@ class EditDataternakForm extends Component {
             {getFieldDecorator("kecamatan", {
               initialValue: kecamatan,
             })(
-              <Select placeholder="Masukkan kecamatan" onChange={this.handleDistrictChange}>
+              <Select
+                placeholder="Masukkan kecamatan"
+                onChange={this.handleDistrictChange}
+              >
                 {districts.map((district) => (
                   <Select.Option key={district.id} value={district.name}>
                     {district.name}
@@ -215,11 +244,8 @@ class EditDataternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Foto Kandang" name="file">
-              {getFieldDecorator("file")(
-                <Upload.Dragger
-                beforeUpload={() => false}
-                listType="picture"
-              >
+            {getFieldDecorator("file")(
+              <Upload.Dragger beforeUpload={() => false} listType="picture">
                 <p className="ant-upload-drag-icon">
                   <Icon type="inbox" />
                 </p>
@@ -230,10 +256,9 @@ class EditDataternakForm extends Component {
                   Support for a single or bulk upload.
                 </p>
               </Upload.Dragger>
-              )}
+            )}
           </Form.Item>
         </Form>
-        
       </Modal>
     );
   }

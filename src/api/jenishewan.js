@@ -1,9 +1,8 @@
 import request from "@/utils/request";
-export function addHewan(data) {
+export function addJenisHewan(data) {
   // Buat objek FormData untuk mengirim file
   const formData = new FormData();
   formData.append("kodeEartagNasional", data.kodeEartagNasional);
-  formData.append("noKartuTernak", data.noKartuTernak);
   formData.append("provinsi", data.provinsi);
   formData.append("kabupaten", data.kabupaten);
   formData.append("kecamatan", data.kecamatan);
@@ -13,26 +12,22 @@ export function addHewan(data) {
   formData.append("longitude", data.longitude);
   formData.append("peternak_id", data.peternak_id);
   formData.append("kandang_id", data.kandang_id);
+  formData.append("jenishewan", data.jenisHewan);
   formData.append("spesies", data.spesies);
   formData.append("sex", data.sex);
-  formData.append("umur", data.umur);
-  formData.append("identifikasiHewan", data.identifikasiHewan);
-  formData.append("petugas_id", data.petugas_id);
-  formData.append("tanggalTerdaftar", data.tanggalTerdaftar);
+  formData.append("jumlah", data.jumlah);
   formData.append("file", data.file.file); // 'file' sesuai dengan nama field di backend
 
   return request({
-    url: "/hewan",
+    url: "/jenishewan",
     method: "post",
     data: formData, // Mengirim FormData dengan file
   });
 }
 
-export function addHewanWithoutFile(data) {
+export function addJenisHewanWithoutFile(data) {
   // Buat objek FormData untuk mengirim file
   const formData = new FormData();
-  formData.append("kodeEartagNasional", data.kodeEartagNasional);
-  formData.append("noKartuTernak", data.noKartuTernak);
   formData.append("provinsi", data.provinsi);
   formData.append("kabupaten", data.kabupaten);
   formData.append("kecamatan", data.kecamatan);
@@ -42,30 +37,28 @@ export function addHewanWithoutFile(data) {
   formData.append("longitude", data.longitude);
   formData.append("peternak_id", data.peternak_id);
   formData.append("kandang_id", data.kandang_id);
+  formData.append("jenishewan", data.jenisHewan);
   formData.append("spesies", data.spesies);
   formData.append("sex", data.sex);
-  formData.append("umur", data.umur);
-  formData.append("identifikasiHewan", data.identifikasiHewan);
-  formData.append("petugas_id", data.petugas_id);
-  formData.append("tanggalTerdaftar", data.tanggalTerdaftar);
+  formData.append("jumlah", data.jumlah);
 
   return request({
-    url: "/hewan",
+    url: "/jenishewan",
     method: "post",
     data: formData,
   });
 }
 
-export function getHewans() {
+export function getJenisHewan() {
   return request({
-    url: "/hewan",
+    url: "/jenishewan",
     method: "get",
   });
 }
 
-export function getHewanByPeternak(peternakID) {
+export function getJenisHewanByPeternak(peternakID) {
   return request({
-    url: "/hewan",
+    url: "/jenishewan",
     method: "get",
     params: {
       peternakID: peternakID,
@@ -73,10 +66,8 @@ export function getHewanByPeternak(peternakID) {
   });
 }
 
-export function editHewan(data, id) {
+export function editJenisHewan(data, id) {
   const formData = new FormData();
-  formData.append("kodeEartagNasional", data.kodeEartagNasional);
-  formData.append("noKartuTernak", data.noKartuTernak);
   formData.append("provinsi", data.provinsi);
   formData.append("kabupaten", data.kabupaten);
   formData.append("kecamatan", data.kecamatan);
@@ -86,24 +77,21 @@ export function editHewan(data, id) {
   formData.append("longitude", data.longitude);
   formData.append("peternak_id", data.peternak_id);
   formData.append("kandang_id", data.kandang_id);
+  formData.append("jenishewan", data.jenisHewan);
   formData.append("spesies", data.spesies);
   formData.append("sex", data.sex);
-  formData.append("umur", data.umur);
-  formData.append("identifikasiHewan", data.identifikasiHewan);
-  formData.append("petugas_id", data.petugas_id);
-  formData.append("tanggalTerdaftar", data.tanggalTerdaftar);
-  formData.append("file", data.file.file);
+  formData.append("jumlah", data.jumlah);
 
   return request({
-    url: `/hewan/${id}`,
+    url: `/jenishewan/${id}`,
     method: "put",
     data: formData,
   });
 }
 
-export function deleteHewan(data) {
+export function deleteJenisHewan(data) {
   return request({
-    url: `/hewan/${data.kodeEartagNasional}`,
+    url: `/jenishewan/${data.kodeEartagNasional}`,
     method: "delete",
     data,
   });

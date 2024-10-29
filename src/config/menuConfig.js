@@ -15,7 +15,7 @@ const menuList = [
     title: "Data Petugas",
     path: "/petugas",
     icon: "user",
-    roles: ["ROLE_ADMINISTRATOR",],
+    roles: ["ROLE_ADMINISTRATOR"],
   },
   {
     title: "Data Peternak",
@@ -65,10 +65,18 @@ const menuList = [
     icon: "copy",
     roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
   },
-//   {title: "Monitoring",
-//   path: "/monitoring",
-//   icon: "camera",
-//   roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
-// }
+
+  {
+    title: "Jenis Hewan",
+    path: "/jenis-hewan",
+    icon: "eye",
+    roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
+  },
+  {
+    title: "Monitoring",
+    path: "/monitoring",
+    icon: "camera",
+    roles: ["ROLE_ADMINISTRATOR", "ROLE_PETUGAS", "ROLE_PETERNAK"],
+  },
 ];
 export default menuList;

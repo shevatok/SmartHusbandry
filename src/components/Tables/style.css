@@ -1,0 +1,16 @@
+.table-container {
+  padding: 1rem;
+  background: white;
+  margin: 1rem;
+  border-radius: 0.1rem;
+  box-shadow: 1px 1px 5px rgb(226, 226, 226);
+}
+.table-container .table {
+  width: 100%;
+}
+
+.table tr th,
+.table tr td {
+  padding: 0.4rem;
+  border-bottom: 0.08rem solid #f1f1f1;
+}

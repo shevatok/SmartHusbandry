@@ -2,33 +2,35 @@ import request from "@/utils/request";
 export function addKandang(data) {
   // Buat objek FormData untuk mengirim file
   const formData = new FormData();
-  formData.append('idKandang', data.idKandang)
-  formData.append('peternak_id', data.peternak_id)
-  formData.append('luas', data.luas)
-  formData.append('kapasitas', data.kapasitas)
-  formData.append('nilaiBangunan', data.nilaiBangunan)
-  formData.append('alamat', data.alamat)
-  formData.append('latitude', data.latitude)
-  formData.append('longitude', data.longitude)
-  formData.append('file', data.file.file); // 'file' sesuai dengan nama field di backend
+  formData.append("idKandang", data.idKandang);
+  formData.append("peternak_id", data.peternak_id);
+  formData.append("luas", data.luas);
+  formData.append("jenis_id", data.jenis_id);
+  formData.append("kapasitas", data.kapasitas);
+  formData.append("nilaiBangunan", data.nilaiBangunan);
+  formData.append("alamat", data.alamat);
+  formData.append("latitude", data.latitude);
+  formData.append("longitude", data.longitude);
+  formData.append("file", data.file.file); 
 
   return request({
     url: "/kandang",
     method: "post",
-    data: formData, 
+    data: formData,
   });
 }
 
 export function addKandangWithoutFile(data) {
   const formData = new FormData();
-  formData.append('idKandang', data.idKandang)
-  formData.append('peternak_id', data.peternak_id)
-  formData.append('luas', data.luas)
-  formData.append('kapasitas', data.kapasitas)
-  formData.append('nilaiBangunan', data.nilaiBangunan)
-  formData.append('alamat', data.alamat)
-  formData.append('latitude', data.latitude)
-  formData.append('longitude', data.longitude)
+  formData.append("idKandang", data.idKandang);
+  formData.append("peternak_id", data.peternak_id);
+  formData.append("luas", data.luas);
+  formData.append("jenis_id", data.jenisHewan);
+  formData.append("kapasitas", data.kapasitas);
+  formData.append("nilaiBangunan", data.nilaiBangunan);
+  formData.append("alamat", data.alamat);
+  formData.append("latitude", data.latitude);
+  formData.append("longitude", data.longitude);
 
   return request({
     url: "/kandang",
@@ -39,15 +41,16 @@ export function addKandangWithoutFile(data) {
 
 export function editKandang(data, id) {
   const formData = new FormData();
-  formData.append('idKandang', data.idKandang)
-  formData.append('peternak_id', data.peternak_id)
-  formData.append('luas', data.luas)
-  formData.append('kapasitas', data.kapasitas)
-  formData.append('nilaiBangunan', data.nilaiBangunan)
-  formData.append('alamat', data.alamat)
-  formData.append('latitude', data.latitude)
-  formData.append('longitude', data.longitude)
-  formData.append('file', data.file.file);
+  formData.append("idKandang", data.idKandang);
+  formData.append("peternak_id", data.peternak_id);
+  formData.append("luas", data.luas);
+  formData.append("jenis_id", data.jenis_id);
+  formData.append("kapasitas", data.kapasitas);
+  formData.append("nilaiBangunan", data.nilaiBangunan);
+  formData.append("alamat", data.alamat);
+  formData.append("latitude", data.latitude);
+  formData.append("longitude", data.longitude);
+  formData.append("file", data.file.file);
 
   return request({
     url: `/kandang/${id}`,
@@ -65,10 +68,10 @@ export function getKandang() {
 
 export function getKandangByPeternak(peternakID) {
   return request({
-    url: "/kandang", 
+    url: "/kandang",
     method: "get",
     params: {
-      peternakID: peternakID
+      peternakID: peternakID,
     },
   });
 }
