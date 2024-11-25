@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { Card } from "antd";
-import { connect } from "react-redux";
+import React, { Component } from 'react'
+import { Card } from 'antd'
+import { connect } from 'react-redux'
 
-import BackgroundImage from "@/assets/images/Peternakan-Sapi.jpg";
+import BackgroundImage from '@/assets/images/Peternakan-Sapi.jpg'
 import './index.less'
 class BoxCard extends Component {
-  state = {};
+  state = {}
   render() {
     return (
       <div className="box-card-component">
@@ -14,14 +14,13 @@ class BoxCard extends Component {
             <img
               alt="example"
               src={BackgroundImage}
-              style={{height:"480px"}}
+              style={{ height: '100%' }}
             />
           }
-        >
-        </Card>
+        ></Card>
       </div>
-    );
+    )
   }
 }
 
-export default connect((state) => state.user)(BoxCard);
+export default connect((state) => state.user)(BoxCard)

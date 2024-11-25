@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Modal, Select, Upload, Icon } from 'antd'
+import { Form, Input, Modal, Select, Upload, Icon, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { getPeternaks } from '@/api/peternak'
 import { getKandang } from '@/api/kandang'
@@ -255,7 +255,7 @@ class AddKandangForm extends Component {
         onCancel={onCancel}
         onOk={onOk}
         confirmLoading={confirmLoading}
-        width={700}
+        width={1000}
       >
         <Form
           form={form}
@@ -263,152 +263,210 @@ class AddKandangForm extends Component {
           layout="vertical"
           autoComplete="off"
         >
-          <Form.Item label="Nama Kandang:">
-            {getFieldDecorator('namaKandang', {
-              rules: [{ required: true, message: 'Masukkan mama kandang!' }],
-            })(<Input placeholder="Masukkan nama kandang" />)}
-          </Form.Item>
-          <Form.Item label="Jenis Kandang:">
-            {getFieldDecorator('jenisKandang', {
-              initialValue: undefined,
-            })(
-              <Select
-                placeholder="Pilih Jenis Kandang"
-                onChange={this.handleProvinceChange}
-              >
-                <Select.Option key="1" value="permanen">
-                  Permanen
-                </Select.Option>
-                <Select.Option key="2" value="semi permanen">
-                  Semi Permanen
-                </Select.Option>
-                <Select.Option key="3" value="tidak permanen">
-                  Tidak Permanen
-                </Select.Option>
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Nama Peternak:">
-            {getFieldDecorator('peternak_id', {
-              rules: [
-                { required: true, message: 'Silahkan isi nama peternak!' },
-              ],
-            })(
-              <Select
-                placeholder="Pilih Nama Peternak"
-                onChange={this.handlePeternakChange}
-              >
-                {peternakList.map((peternak) => (
-                  <Option key={peternak.idPeternak} value={peternak.idPeternak}>
-                    {peternak.namaPeternak}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Luas Kandang:">
-            {getFieldDecorator('luas', {
-              rules: [{ required: true, message: 'Masukkan luas kandang!' }],
-            })(<Input placeholder="Masukkan luas kandang" />)}
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="Nama Kandang:">
+                {getFieldDecorator('namaKandang', {
+                  rules: [
+                    { required: true, message: 'Masukkan mama kandang!' },
+                  ],
+                })(<Input placeholder="Masukkan nama kandang" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Jenis Kandang:">
+                {getFieldDecorator('jenisKandang', {
+                  initialValue: undefined,
+                })(
+                  <Select
+                    placeholder="Pilih Jenis Kandang"
+                    onChange={this.handleProvinceChange}
+                  >
+                    <Select.Option key="1" value="permanen">
+                      Permanen
+                    </Select.Option>
+                    <Select.Option key="2" value="semi permanen">
+                      Semi Permanen
+                    </Select.Option>
+                    <Select.Option key="3" value="tidak permanen">
+                      Tidak Permanen
+                    </Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Nama Peternak:">
+                {getFieldDecorator('peternak_id', {
+                  rules: [
+                    { required: true, message: 'Silahkan isi nama peternak!' },
+                  ],
+                })(
+                  <Select
+                    placeholder="Pilih Nama Peternak"
+                    onChange={this.handlePeternakChange}
+                  >
+                    {peternakList.map((peternak) => (
+                      <Option
+                        key={peternak.idPeternak}
+                        value={peternak.idPeternak}
+                      >
+                        {peternak.namaPeternak}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Luas Kandang:">
+                {getFieldDecorator('luas', {
+                  rules: [
+                    { required: true, message: 'Masukkan luas kandang!' },
+                  ],
+                })(<Input placeholder="Masukkan luas kandang" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {' '}
+              <Form.Item label="Jenis Hewan:">
+                {getFieldDecorator('jjenis_id ', {
+                  rules: [{ required: true, message: 'Masukkan Jenis Hewan!' }],
+                })(<Input placeholder="Masukkan Jenis Hewan" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {' '}
+              <Form.Item label="Kapasitas Kandang:">
+                {getFieldDecorator('kapasitas', {
+                  rules: [
+                    { required: true, message: 'Masukkan kapasitas kandang!' },
+                  ],
+                })(<Input placeholder="Masukkan kapasitas kandang" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Nilai Bangunan:">
+                {getFieldDecorator('nilaiBangunan', {
+                  rules: [
+                    { required: true, message: 'Masukkan nilai bangunan!' },
+                  ],
+                })(<Input placeholder="Masukkan nilai bangunan" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Provinsi:">
+                {getFieldDecorator('provinsi', {
+                  initialValue: selectedProvince || undefined,
+                })(
+                  <Select
+                    placeholder="Masukkan provinsi"
+                    onChange={this.handleProvinceChange}
+                  >
+                    {provinces.map((province) => (
+                      <Select.Option key={province.id} value={province.name}>
+                        {province.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Provinsi:">
+                {getFieldDecorator('provinsi', {
+                  initialValue: selectedProvince || undefined,
+                })(
+                  <Select
+                    placeholder="Masukkan provinsi"
+                    onChange={this.handleProvinceChange}
+                  >
+                    {provinces.map((province) => (
+                      <Select.Option key={province.id} value={province.name}>
+                        {province.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Kabupaten:">
+                {getFieldDecorator('kabupaten', {
+                  initialValue: selectedRegency || undefined,
+                })(
+                  <Select
+                    placeholder="Masukkan kabupaten"
+                    onChange={this.handleRegencyChange}
+                  >
+                    {regencies.map((regency) => (
+                      <Select.Option key={regency.id} value={regency.name}>
+                        {regency.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Kecamatan:">
+                {getFieldDecorator('kecamatan', {
+                  initialValue: selectedDistrict || undefined,
+                })(
+                  <Select
+                    placeholder="Masukkan kecamatan"
+                    onChange={this.handleDistrictChange}
+                  >
+                    {districts.map((district) => (
+                      <Select.Option key={district.id} value={district.name}>
+                        {district.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Desa:">
+                {getFieldDecorator('desa', {
+                  initialValue: selectedVillage || undefined,
+                })(
+                  <Select
+                    placeholder="Masukkan Desa"
+                    onChange={this.handleVillageChange}
+                  >
+                    {villages.map((village) => (
+                      <Select.Option key={village.id} value={village.name}>
+                        {village.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="Alamat:">
+                {getFieldDecorator('alamat', {
+                  rules: [{ required: true, message: 'Masukkan alamat!' }],
+                })(<Input placeholder="Masukkan alamat" />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Latitude:">
+                {getFieldDecorator('latitude')(
+                  <Input placeholder="Latitude" disabled />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Longitude:">
+                {getFieldDecorator('longitude')(
+                  <Input placeholder="Longitude" disabled />
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
 
-          <Form.Item label="Jenis Hewan:">
-            {getFieldDecorator('jjenis_id ', {
-              rules: [{ required: true, message: 'Masukkan Jenis Hewan!' }],
-            })(<Input placeholder="Masukkan Jenis Hewan" />)}
-          </Form.Item>
-
-          <Form.Item label="Kapasitas Kandang:">
-            {getFieldDecorator('kapasitas', {
-              rules: [
-                { required: true, message: 'Masukkan kapasitas kandang!' },
-              ],
-            })(<Input placeholder="Masukkan kapasitas kandang" />)}
-          </Form.Item>
-          <Form.Item label="Nilai Bangunan:">
-            {getFieldDecorator('nilaiBangunan', {
-              rules: [{ required: true, message: 'Masukkan nilai bangunan!' }],
-            })(<Input placeholder="Masukkan nilai bangunan" />)}
-          </Form.Item>
-          <Form.Item label="Provinsi:">
-            {getFieldDecorator('provinsi', {
-              initialValue: selectedProvince || undefined,
-            })(
-              <Select
-                placeholder="Masukkan provinsi"
-                onChange={this.handleProvinceChange}
-              >
-                {provinces.map((province) => (
-                  <Select.Option key={province.id} value={province.name}>
-                    {province.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Kabupaten:">
-            {getFieldDecorator('kabupaten', {
-              initialValue: selectedRegency || undefined,
-            })(
-              <Select
-                placeholder="Masukkan kabupaten"
-                onChange={this.handleRegencyChange}
-              >
-                {regencies.map((regency) => (
-                  <Select.Option key={regency.id} value={regency.name}>
-                    {regency.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Kecamatan:">
-            {getFieldDecorator('kecamatan', {
-              initialValue: selectedDistrict || undefined,
-            })(
-              <Select
-                placeholder="Masukkan kecamatan"
-                onChange={this.handleDistrictChange}
-              >
-                {districts.map((district) => (
-                  <Select.Option key={district.id} value={district.name}>
-                    {district.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Desa:">
-            {getFieldDecorator('desa', {
-              initialValue: selectedVillage || undefined,
-            })(
-              <Select
-                placeholder="Masukkan Desa"
-                onChange={this.handleVillageChange}
-              >
-                {villages.map((village) => (
-                  <Select.Option key={village.id} value={village.name}>
-                    {village.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-          <Form.Item label="Alamat:">
-            {getFieldDecorator('alamat', {
-              rules: [{ required: true, message: 'Masukkan alamat!' }],
-            })(<Input placeholder="Masukkan alamat" />)}
-          </Form.Item>
-          <Form.Item label="Latitude:">
-            {getFieldDecorator('latitude')(
-              <Input placeholder="Latitude" disabled />
-            )}
-          </Form.Item>
-          <Form.Item label="Longitude:">
-            {getFieldDecorator('longitude')(
-              <Input placeholder="Longitude" disabled />
-            )}
-          </Form.Item>
           <Form.Item label="Foto Kandang" name="file">
             {getFieldDecorator('file')(
               <Upload.Dragger beforeUpload={() => false} listType="picture">

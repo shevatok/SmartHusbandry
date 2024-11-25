@@ -1,7 +1,6 @@
 import React from 'react'
 import './index.less'
 import BarChart from './components/BarChart'
-import PieChart from './components/PieChart'
 import BoxCard from './components/BoxCard'
 import Map from './components/Map'
 import ImportAllData from './components/ImportAllData'

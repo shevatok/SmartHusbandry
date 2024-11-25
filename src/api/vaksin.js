@@ -1,10 +1,17 @@
 import request from '@/utils/request'
 
+import { v4 as uuidv4 } from 'uuid'
+
 export function addVaksin(data) {
+  const updatedData = {
+    ...data,
+    idVaksin: uuidv4(),
+  }
+
   return request({
     url: '/vaksin',
     method: 'post',
-    data,
+    updatedData,
   })
 }
 
