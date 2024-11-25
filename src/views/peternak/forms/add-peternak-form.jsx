@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Form, Input, Modal, Select } from "antd";
-import { getPetugas } from "@/api/petugas"; // Import the API function to fetch petugas data
+import React, { Component } from 'react'
+import { Form, Input, Modal, Select } from 'antd'
+import { getPetugas } from '@/api/petugas' // Import the API function to fetch petugas data
 
-const { Option } = Select;
+const { Option } = Select
 
 class AddPeternakForm extends Component {
   state = {
@@ -11,100 +11,130 @@ class AddPeternakForm extends Component {
     districts: [],
     villages: [],
     petugasList: [], // To store the list of petugas names
-  };
+  }
 
   componentDidMount() {
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+    fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
       .then((response) => response.json())
-      .then((provinces) => this.setState({ provinces }));
-    this.fetchPetugasList();
+      .then((provinces) => this.setState({ provinces }))
+    this.fetchPetugasList()
   }
 
   handleProvinceChange = (value) => {
-    const selectedProvince = this.state.provinces.find((province) => province.name === value);
+    const selectedProvince = this.state.provinces.find(
+      (province) => province.name === value
+    )
 
     if (selectedProvince) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`
+      )
         .then((response) => response.json())
-        .then((regencies) => this.setState({ regencies }));
+        .then((regencies) => this.setState({ regencies }))
     }
 
     this.props.form.setFieldsValue({
       kabupaten: undefined,
       kecamatan: undefined,
       desa: undefined,
-    });
-  };
+    })
+  }
 
   handleRegencyChange = (value) => {
-    const selectedRegency = this.state.regencies.find((regency) => regency.name === value);
+    const selectedRegency = this.state.regencies.find(
+      (regency) => regency.name === value
+    )
 
     if (selectedRegency) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedRegency.id}.json`
+      )
         .then((response) => response.json())
-        .then((districts) => this.setState({ districts }));
+        .then((districts) => this.setState({ districts }))
     }
 
     this.props.form.setFieldsValue({
       kecamatan: undefined,
       desa: undefined,
-    });
-  };
+    })
+  }
 
   handleDistrictChange = (value) => {
-    const selectedDistrict = this.state.districts.find((district) => district.name === value);
+    const selectedDistrict = this.state.districts.find(
+      (district) => district.name === value
+    )
 
     if (selectedDistrict) {
-      fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`)
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedDistrict.id}.json`
+      )
         .then((response) => response.json())
-        .then((villages) => this.setState({ villages }));
+        .then((villages) => this.setState({ villages }))
     }
 
     this.props.form.setFieldsValue({
       desa: undefined,
-    });
-  };
+    })
+  }
 
   handleVillageChange = (value) => {
-    const { provinces, regencies, districts, villages } = this.state;
-    const selectedProvince = provinces.find((province) => province.name === this.props.form.getFieldValue("provinsi"));
-    const selectedRegency = regencies.find((regency) => regency.name === this.props.form.getFieldValue("kabupaten"));
-    const selectedDistrict = districts.find((district) => district.name === this.props.form.getFieldValue("kecamatan"));
-    const selectedVillage = villages.find((village) => village.name === value);
+    const { provinces, regencies, districts, villages } = this.state
+    const selectedProvince = provinces.find(
+      (province) => province.name === this.props.form.getFieldValue('provinsi')
+    )
+    const selectedRegency = regencies.find(
+      (regency) => regency.name === this.props.form.getFieldValue('kabupaten')
+    )
+    const selectedDistrict = districts.find(
+      (district) => district.name === this.props.form.getFieldValue('kecamatan')
+    )
+    const selectedVillage = villages.find((village) => village.name === value)
 
-    if (selectedProvince && selectedRegency && selectedDistrict && selectedVillage) {
-      const mergedLocation = `${selectedVillage.name}, ${selectedDistrict.name}, ${selectedRegency.name}, ${selectedProvince.name}`;
-      this.setState({ mergedLocation });
+    if (
+      selectedProvince &&
+      selectedRegency &&
+      selectedDistrict &&
+      selectedVillage
+    ) {
+      const mergedLocation = `${selectedVillage.name}, ${selectedDistrict.name}, ${selectedRegency.name}, ${selectedProvince.name}`
+      this.setState({ mergedLocation })
       this.props.form.setFieldsValue({
         lokasi: mergedLocation,
-      });
+      })
     }
-  };
+  }
 
   fetchPetugasList = async () => {
     try {
-      const result = await getPetugas(); // Fetch petugas data from the server
-      const { content, statusCode } = result.data;
+      const result = await getPetugas() // Fetch petugas data from the server
+      const { content, statusCode } = result.data
       if (statusCode === 200) {
         // Extract petugas names and nikPetugas
         const petugasList = content.map((petugas) => ({
           nikPetugas: petugas.nikPetugas,
-          namaPetugas: petugas.namaPetugas
-        }));
-        this.setState({ petugasList });
+          namaPetugas: petugas.namaPetugas,
+        }))
+        this.setState({ petugasList })
       }
     } catch (error) {
       // Handle error if any
-      console.error("Error fetching petugas data: ", error);
+      console.error('Error fetching petugas data: ', error)
     }
-  };
+  }
 
   render() {
-    const { visible, onCancel, onOk, form, confirmLoading, selectedPetugasData } = this.props;
-    const { provinces, regencies, districts, villages } = this.state;
-    const { getFieldDecorator } = form;
+    const {
+      visible,
+      onCancel,
+      onOk,
+      form,
+      confirmLoading,
+      selectedPetugasData,
+    } = this.props
+    const { provinces, regencies, districts, villages } = this.state
+    const { getFieldDecorator } = form
     const formItemLayout = {
-      labelCol: { 
+      labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
       },
@@ -112,8 +142,8 @@ class AddPeternakForm extends Component {
         xs: { span: 24 },
         sm: { span: 16 },
       },
-    };
-    const { petugasList } = this.state;
+    }
+    const { petugasList } = this.state
 
     return (
       <Modal
@@ -123,27 +153,30 @@ class AddPeternakForm extends Component {
         onOk={onOk}
         confirmLoading={confirmLoading}
       >
-        <Form form={form} name="validateOnly" layout="vertical" autoComplete="off">
-          <Form.Item label="ID Peternak:">
-            {getFieldDecorator("idPeternak", {
-              rules: [{ required: true, message: "Silahkan isi id peternak" }],
-            })(<Input placeholder="Masukkan ID Peternak Unik" />)}
-          </Form.Item>
+        <Form
+          form={form}
+          name="validateOnly"
+          layout="vertical"
+          autoComplete="off"
+        >
           <Form.Item label="Nama Peternak:">
-            {getFieldDecorator("namaPeternak", {
+            {getFieldDecorator('namaPeternak', {
               rules: [
-                { required: true, message: "Silahkan isi nama peternak" },
+                { required: true, message: 'Silahkan isi nama peternak' },
               ],
             })(<Input placeholder="Masukkan Nama Peternak" />)}
           </Form.Item>
           <Form.Item label="NIK Peternak:">
-            {getFieldDecorator("nikPeternak", {
-              rules: [{ required: true, message: "Silahkan isi NIK Peternak" }],
+            {getFieldDecorator('nikPeternak', {
+              rules: [{ required: true, message: 'Silahkan isi NIK Peternak' }],
             })(<Input placeholder="Masukkan NIK Peternak" />)}
           </Form.Item>
           <Form.Item label="Provinsi:">
-            {getFieldDecorator("provinsi")(
-              <Select placeholder="Masukkan provinsi" onChange={this.handleProvinceChange}>
+            {getFieldDecorator('provinsi')(
+              <Select
+                placeholder="Masukkan provinsi"
+                onChange={this.handleProvinceChange}
+              >
                 {provinces.map((province) => (
                   <Select.Option key={province.id} value={province.name}>
                     {province.name}
@@ -153,8 +186,11 @@ class AddPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Kabupaten:">
-            {getFieldDecorator("kabupaten")(
-              <Select placeholder="Masukkan kabupaten" onChange={this.handleRegencyChange}>
+            {getFieldDecorator('kabupaten')(
+              <Select
+                placeholder="Masukkan kabupaten"
+                onChange={this.handleRegencyChange}
+              >
                 {regencies.map((regency) => (
                   <Select.Option key={regency.id} value={regency.name}>
                     {regency.name}
@@ -164,8 +200,11 @@ class AddPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Kecamatan:">
-            {getFieldDecorator("kecamatan")(
-              <Select placeholder="Masukkan kecamatan" onChange={this.handleDistrictChange}>
+            {getFieldDecorator('kecamatan')(
+              <Select
+                placeholder="Masukkan kecamatan"
+                onChange={this.handleDistrictChange}
+              >
                 {districts.map((district) => (
                   <Select.Option key={district.id} value={district.name}>
                     {district.name}
@@ -175,8 +214,11 @@ class AddPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Desa:">
-            {getFieldDecorator("desa")(
-              <Select placeholder="Masukkan Desa" onChange={this.handleVillageChange}>
+            {getFieldDecorator('desa')(
+              <Select
+                placeholder="Masukkan Desa"
+                onChange={this.handleVillageChange}
+              >
                 {villages.map((village) => (
                   <Select.Option key={village.id} value={village.name}>
                     {village.name}
@@ -185,15 +227,35 @@ class AddPeternakForm extends Component {
               </Select>
             )}
           </Form.Item>
+          <Form.Item label="Dusun:">
+            {getFieldDecorator('dusun', {
+              rules: [{ required: true, message: 'Silahkan isi dusun' }],
+            })(<Input placeholder="Masukkan dusun" />)}
+          </Form.Item>
           <Form.Item label="Lokasi:">
-            {getFieldDecorator("lokasi", {
-              rules: [{ required: true, message: "Silahkan isi lokasi" }],
-            })(<Input  placeholder="Lokasi akan otomatis terisi" />)}
+            {getFieldDecorator('lokasi', {
+              rules: [{ required: true, message: 'Silahkan isi lokasi' }],
+            })(<Input placeholder="Lokasi akan otomatis terisi" />)}
+          </Form.Item>
+          <Form.Item label="Alamat:">
+            {getFieldDecorator('alamat', {
+              rules: [{ required: true, message: 'Silahkan isi alamat' }],
+            })(<Input placeholder="Masukkan alamat" />)}
+          </Form.Item>
+          <Form.Item label="Latitude:">
+            {getFieldDecorator('latitude', {
+              rules: [{ required: true, message: 'Silahkan isi latitude' }],
+            })(<Input placeholder="Masukkan Latitude" />)}
+          </Form.Item>
+          <Form.Item label="Longitude:">
+            {getFieldDecorator('longitude', {
+              rules: [{ required: true, message: 'Silahkan isi longitude' }],
+            })(<Input placeholder="Masukkan Longitude" />)}
           </Form.Item>
           <Form.Item label="Petugas Pendaftar:">
-            {getFieldDecorator("petugas_id", {
+            {getFieldDecorator('petugas_id', {
               rules: [
-                { required: true, message: "Silahkan isi petugas pendaftar" },
+                { required: true, message: 'Silahkan isi petugas pendaftar' },
               ],
             })(
               <Select placeholder="Pilih Petugas Pendaftar">
@@ -206,9 +268,9 @@ class AddPeternakForm extends Component {
             )}
           </Form.Item>
           <Form.Item label="Tanggal Pendaftaran:">
-            {getFieldDecorator("tanggalPendaftaran", {
+            {getFieldDecorator('tanggalPendaftaran', {
               rules: [
-                { required: true, message: "Silahkan tanggal pendaftaran" },
+                { required: true, message: 'Silahkan tanggal pendaftaran' },
               ],
             })(
               <Input type="date" placeholder="Masukkan Tanggal Pendaftaran" />
@@ -216,10 +278,8 @@ class AddPeternakForm extends Component {
           </Form.Item>
         </Form>
       </Modal>
-    );
+    )
   }
 }
 
-export default Form.create({ name: "AddPeternakForm" })(
-  AddPeternakForm
-);
+export default Form.create({ name: 'AddPeternakForm' })(AddPeternakForm)

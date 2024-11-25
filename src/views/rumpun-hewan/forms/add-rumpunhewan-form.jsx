@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Form, Input, Modal } from 'antd'
 
-class AddJenisHewanForm extends Component {
+class AddRumpunHewanForm extends Component {
   render() {
     const { visible, onCancel, onOk, form, confirmLoading } = this.props
     const { getFieldDecorator } = form
@@ -19,7 +19,7 @@ class AddJenisHewanForm extends Component {
 
     return (
       <Modal
-        title="Tambah Jenis Hewan"
+        title="Tambah Rumpun Hewan"
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}
@@ -27,10 +27,10 @@ class AddJenisHewanForm extends Component {
         width={700}
       >
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-          <Form.Item label="Jenis Hewan:">
-            {getFieldDecorator('jenis', {
-              rules: [{ required: true, message: 'Silahkan jenis hewan' }],
-            })(<Input placeholder="Masukkan jenis hewan" />)}
+          <Form.Item label="Rumpun Hewan:">
+            {getFieldDecorator('rumpun', {
+              rules: [{ required: true, message: 'Silahkan rumpun hewan' }],
+            })(<Input placeholder="Masukkan rumpun hewan" />)}
           </Form.Item>
           <Form.Item label="Deskripsi:">
             {getFieldDecorator('deskripsi', {
@@ -48,4 +48,4 @@ class AddJenisHewanForm extends Component {
   }
 }
 
-export default Form.create({ name: 'AddHewanForm' })(AddJenisHewanForm)
+export default Form.create({ name: 'AddRumpunHewanForm' })(AddRumpunHewanForm)

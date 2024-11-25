@@ -1,14 +1,14 @@
-import axios from "axios";
-import store from "@/store";
-import { Modal } from "antd";
-import { getToken } from "@/utils/auth";
-import { logout } from "@/store/actions";
+import axios from 'axios'
+import store from '@/store'
+import { Modal } from 'antd'
+import { getToken } from '@/utils/auth'
+import { logout } from '@/store/actions'
 
 //创建一个axios示例
 const service = axios.create({
   baseURL: process.env.REACT_APP_BASE_API, // api 的 base_url
-  timeout: 5000, // request timeout
-});
+  timeout: 5000000, // request timeout
+})
 
 // 请求拦截器
 service.interceptors.request.use(
@@ -16,20 +16,20 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (store.getState().user.token) {
       // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
-      config.headers.Authorization = "Bearer " + getToken();
+      config.headers.Authorization = 'Bearer ' + getToken()
     }
-    return config;
+    return config
   },
   (error) => {
     // Do something with request error
-    console.log(error); // for debug
-    Promise.reject(error);
+    console.log(error) // for debug
+    Promise.reject(error)
   }
-);
+)
 
 // 响应拦截器
 service.interceptors.response.use(
-  (response) => response,
+  (response) => response
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态
    * 当code返回如下情况则说明权限有问题，登出并返回到登录页
@@ -84,6 +84,6 @@ service.interceptors.response.use(
   //   }
   //   return Promise.reject(error);
   // }
-);
+)
 
-export default service;
+export default service

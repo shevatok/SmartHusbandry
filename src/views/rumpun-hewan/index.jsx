@@ -12,22 +12,22 @@ import {
   Input,
 } from 'antd'
 import {
-  getJenisHewan,
-  deleteJenisHewan,
-  editJenisHewan,
-  addJenisHewan,
-} from '@/api/jenishewan'
+  getRumpunHewan,
+  deleteRumpunHewan,
+  editRumpunHewan,
+  addRumpunHewan,
+} from '@/api/rumpunhewan'
 import { getPetugas } from '@/api/petugas'
 import { read, utils } from 'xlsx'
 import { UploadOutlined } from '@ant-design/icons'
-import AddHewanForm from './forms/add-jenishewan-form'
-import EditHewanForm from './forms/edit-jenishewan-form'
+import AddHewanForm from './forms/add-rumpunhewan-form'
+import EditHewanForm from './forms/edit-rumpunhewan-form'
 import TypingCard from '@/components/TypingCard'
 import { reqUserInfo } from '../../api/user'
 
 import { kandangSapi } from '../../assets/images/kandangsapi.jpg'
 
-class JenisHewan extends Component {
+class RumpunHewan extends Component {
   state = {
     petugas: [],
     jenisHewans: [],
@@ -42,29 +42,29 @@ class JenisHewan extends Component {
     user: null,
   }
   //Fungsi ambil data dari database
-  getJenisHewan = async () => {
-    const result = await getJenisHewan()
+  getRumpunHewan = async () => {
+    const result = await getRumpunHewan()
     const { content, statusCode } = result.data
 
     if (statusCode === 200) {
-      const filteredJenisHewan = content.filter((hewan) => {
-        const { idJenisHewan, jenis, deskripsi } = hewan
+      const filteredRumpunHewan = content.filter((hewan) => {
+        const { idRumpunHewan, jenis, deskripsi } = hewan
         const keyword = this.state.searchKeyword.toLowerCase()
 
-        const isIdJenisHewanValid = typeof idJenisHewan === 'string'
+        const isIdRumpunHewanValid = typeof idRumpunHewan === 'string'
         const isJenisValid = typeof jenis === 'string'
         const isDeskripsiValid = typeof deskripsi === 'string'
 
         return (
-          (isIdJenisHewanValid &&
-            idJenisHewan.toLowerCase().includes(keyword)) ||
+          (isIdRumpunHewanValid &&
+            idRumpunHewan.toLowerCase().includes(keyword)) ||
           (isJenisValid && jenis.toLowerCase().includes(keyword)) ||
           (isDeskripsiValid && deskripsi.toLowerCase().includes(keyword))
         )
       })
 
       this.setState({
-        jenisHewans: filteredJenisHewan,
+        jenisHewans: filteredRumpunHewan,
       })
     }
   }
@@ -86,7 +86,7 @@ class JenisHewan extends Component {
         searchKeyword: keyword,
       },
       () => {
-        this.getJenisHewan()
+        this.getRumpunHewan()
       }
     )
   }
@@ -115,7 +115,7 @@ class JenisHewan extends Component {
         return
       }
       this.setState({ editModalLoading: true })
-      editJenisHewan(values, values.kodeEartagNasional)
+      editRumpunHewan(values, values.kodeEartagNasional)
         .then((response) => {
           form.resetFields()
           this.setState({
@@ -123,7 +123,7 @@ class JenisHewan extends Component {
             editHewanModalLoading: false,
           })
           message.success('Berhasil diedit!')
-          this.getJenisHewan()
+          this.getRumpunHewan()
         })
         .catch((e) => {
           message.success('Pengeditan gagal, harap coba lagi!')
@@ -132,7 +132,7 @@ class JenisHewan extends Component {
   }
 
   handleDeleteHewan = (row) => {
-    const { idJenisHewan } = row
+    const { idRumpunHewan } = row
 
     // Dialog alert hapus data
     Modal.confirm({
@@ -142,9 +142,9 @@ class JenisHewan extends Component {
       okType: 'danger',
       cancelText: 'Tidak',
       onOk: () => {
-        deleteJenisHewan({ idJenisHewan }).then((res) => {
+        deleteRumpunHewan({ idRumpunHewan }).then((res) => {
           message.success('Berhasil dihapus')
-          this.getJenisHewan()
+          this.getRumpunHewan()
         })
       },
     })
@@ -172,10 +172,10 @@ class JenisHewan extends Component {
       }
       this.setState({ addHewanModalLoading: true })
       const hewanData = {
-        jenis: values.jenis,
+        rumpun: values.rumpun,
         deskripsi: values.deskripsi,
       }
-      addJenisHewan(hewanData)
+      addRumpunHewan(hewanData)
         .then((response) => {
           form.resetFields()
           this.setState({
@@ -183,7 +183,7 @@ class JenisHewan extends Component {
             addHewanModalLoading: false,
           })
           message.success('Berhasil menambahkan!')
-          this.getJenisHewan()
+          this.getRumpunHewan()
         })
         .catch((e) => {
           message.success('Gagal menambahkan, harap coba lagi!')
@@ -192,12 +192,12 @@ class JenisHewan extends Component {
   }
 
   componentDidMount() {
-    this.getJenisHewan()
+    this.getRumpunHewan()
     reqUserInfo()
       .then((response) => {
         const user = response.data
         this.setState({ user }, () => {
-          this.getJenisHewan()
+          this.getRumpunHewan()
         })
       })
       .catch((error) => {
@@ -362,7 +362,7 @@ class JenisHewan extends Component {
           spesies:
             row[columnMapping['Rumpun Ternak']] ||
             row[columnMapping['Spesies']],
-          JenisHewan:
+          RumpunHewan:
             row[columnMapping['Rumpun Ternak']] ||
             row[columnMapping['jenis Hewan']],
 
@@ -382,7 +382,7 @@ class JenisHewan extends Component {
         try {
           if (existingHewanIndex > -1) {
             // Update existing data
-            await editJenisHewan(dataToSave, dataToSave.kodeEartagNasional)
+            await editRumpunHewan(dataToSave, dataToSave.kodeEartagNasional)
             this.setState((prevState) => {
               const updatedHewan = [...prevState.jenisHewans]
               updatedHewan[existingHewanIndex] = dataToSave
@@ -390,7 +390,7 @@ class JenisHewan extends Component {
             })
           } else {
             // Add new data
-            await addJenisHewan(dataToSave)
+            await addRumpunHewan(dataToSave)
             this.setState((prevState) => ({
               jenisHewans: [...prevState.jenisHewans, dataToSave],
             }))
@@ -431,7 +431,7 @@ class JenisHewan extends Component {
       'NIK Peternak',
       'Id Kandang',
       'Alamat',
-      'Jenis Hewan',
+      'Rumpun Hewan',
       'Spesies',
       'Jenis Kelamin',
       'Jumlah',
@@ -445,7 +445,7 @@ class JenisHewan extends Component {
         item.peternak.nikPeternak,
         item.kandang.idKandang,
         item.alamat,
-        item.JenisHewan,
+        item.RumpunHewan,
         item.spesies,
         item.Jumlah,
         item.sex,
@@ -467,7 +467,7 @@ class JenisHewan extends Component {
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
     link.setAttribute('href', encodedUri)
-    link.setAttribute('download', 'JenisHewan.csv')
+    link.setAttribute('download', 'RumpunHewan.csv')
     document.body.appendChild(link) // Required for Firefox
     link.click()
   }
@@ -476,11 +476,11 @@ class JenisHewan extends Component {
     const { jenisHewans, importModalVisible, searchKeyword, user } = this.state
     const columns = [
       {
-        title: 'Id Jenis Hewan',
-        dataIndex: 'idJenisHewan',
-        key: 'idJenisHewan',
+        title: 'Id Rumpun Hewan',
+        dataIndex: 'idRumpunHewan',
+        key: 'idRumpunHewan',
       },
-      { title: 'Jenis', dataIndex: 'jenis', key: 'jenis' },
+      { title: 'Rumpun', dataIndex: 'rumpun', key: 'rumpun' },
       { title: 'Deskripsi', dataIndex: 'deskripsi', key: 'deskripsi' },
     ]
 
@@ -513,7 +513,7 @@ class JenisHewan extends Component {
           <Row gutter={[16, 16]} justify="start" style={{ paddingLeft: 9 }}>
             <Col xs={24} sm={12} md={8} lg={6} xl={6}>
               <Button type="primary" onClick={this.handleAddHewan}>
-                Tambah Jenis Hewan
+                Tambah Rumpun Hewan
               </Button>
             </Col>
             <Col xs={24} sm={12} md={8} lg={6} xl={6}>
@@ -588,7 +588,7 @@ class JenisHewan extends Component {
       <div className="app-container">
         {/* TypingCard component */}
 
-        <TypingCard title="Manajemen Jenis Hewan" source={cardContent} />
+        <TypingCard title="Manajemen Rumpun Hewan" source={cardContent} />
         <br />
         <Card title={title} style={{ overflowX: 'scroll' }}>
           {renderTable()}
@@ -636,4 +636,4 @@ class JenisHewan extends Component {
   }
 }
 
-export default JenisHewan
+export default RumpunHewan

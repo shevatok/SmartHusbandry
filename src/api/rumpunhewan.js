@@ -1,50 +1,51 @@
 import request from '@/utils/request'
+
 import { v4 as uuidv4 } from 'uuid'
 
-export function addJenisHewan(data) {
-  // Tambahkan idJenisHewan ke data dengan uuidv4
+export function addRumpunHewan(data) {
+  // Tambahkan idRumpunHewan ke data dengan uuidv4
   const updatedData = {
     ...data,
-    idJenisHewan: uuidv4(),
+    idRumpunHewan: uuidv4(),
   }
 
   return request({
-    url: '/jenishewan',
+    url: '/rumpunhewan',
     method: 'post',
     data: updatedData,
   })
 }
 
-export function getJenisHewan() {
+export function getRumpunHewan() {
   return request({
-    url: '/jenishewan',
+    url: '/rumpunhewan',
     method: 'get',
   })
 }
 
-export function editJenisHewan(data, id) {
+export function editRumpunHewan(data, id) {
   const formData = new FormData()
   formData.append('jenis', data.jenis)
   formData.append('deskripsi', data.deskripsi)
 
   return request({
-    url: `/jenishewan/${id}`,
+    url: `/rumpunhewan/${id}`,
     method: 'put',
     data: formData,
   })
 }
 
-export function deleteJenisHewan(data) {
+export function deleteRumpunHewan(data) {
   return request({
-    url: `/jenishewan/${data.idJenisHewan}`,
+    url: `/rumpunhewan/${data.idRumpunHewan}`,
     method: 'delete',
     data,
   })
 }
 
-export function addJenisHewanImport(data) {
+export function addRumpunHewanImport(data) {
   return request({
-    url: '/jenishewan',
+    url: '/rumpunhewan',
     method: 'post',
     data: data,
   })
