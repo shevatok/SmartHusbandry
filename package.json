@@ -35,6 +35,7 @@
     "papaparse": "^5.4.1",
     "prop-types": "^15.7.2",
     "react": "^16.2.0",
+    "react_antd_admin_template": "file:",
     "react-beautiful-dnd": "^13.0.0",
     "react-countup": "^4.3.3",
     "react-custom-scrollbars": "^4.2.1",
